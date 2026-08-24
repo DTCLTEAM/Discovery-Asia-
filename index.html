@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Discovery Asia OS</title>
+<style>
+:root{
+  --deep:#0E2A33; --deep2:#123A46; --paper:#F6F4EF; --card:#FFFFFF;
+  --ink:#16262B; --muted:#5E6E73; --line:#E2DED4;
+  --brass:#C99A3C; --brassBg:#FBF3E2;
+  --act:#1E6E64; --actBg:#E4F0EE;
+  --ok:#1E7A46; --okBg:#E3F2E9;
+  --warn:#A96A12; --warnBg:#FBEED6;
+  --bad:#B84A3A; --badBg:#F9E6E2;
+  --blue:#2A5B8C; --blueBg:#E6EEF6;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.5;overflow-x:hidden}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit;font-size:15px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:9px;padding:10px 12px;width:100%;min-height:44px}
+textarea{min-height:70px;resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--act);outline-offset:1px}
+label{display:block;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin:10px 0 4px}
+a{color:var(--act)}
+/* Top bar */
+#topbar{position:sticky;top:0;z-index:30;background:var(--deep);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 14px}
+#topbar .brand{font-weight:800;letter-spacing:.14em;font-size:14px}
+#topbar .brand small{display:block;font-weight:500;letter-spacing:.24em;font-size:9px;color:var(--brass)}
+#topbar .sp{flex:1}
+#topbar .who{font-size:12px;color:#BFD3D8;text-align:right;line-height:1.3}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:9px;padding:10px 14px;font-size:14px;font-weight:700;background:var(--act);color:#fff;min-height:42px}
+.btn.sm{padding:6px 10px;min-height:32px;font-size:12.5px;border-radius:7px}
+.btn.ghost{background:#fff;color:var(--act);border:1px solid var(--act)}
+.btn.gold{background:var(--brass);color:#231a05}
+.btn.grey{background:#EDEAE1;color:var(--ink)}
+.btn.red{background:var(--bad)}
+.btn.deep{background:var(--deep2)}
+.btn:disabled{opacity:.5;cursor:default}
+/* Layout */
+#shell{display:flex;min-height:calc(100vh - 56px)}
+#nav{width:212px;flex:0 0 212px;background:#FCFBF7;border-right:1px solid var(--line);padding:12px 8px 90px}
+#nav .grp{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--muted);margin:14px 8px 4px}
+#nav a{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:600;margin:1px 0}
+#nav a .mno{font-size:10px;font-weight:800;color:var(--brass);width:20px}
+#nav a.on{background:var(--deep);color:#fff}
+#nav a.on .mno{color:var(--brass)}
+#main{flex:1;min-width:0;padding:16px 16px 110px;max-width:1180px}
+h1{font-size:21px;margin:2px 0 2px}
+h2{font-size:16px;margin:0 0 8px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:0 1px 2px rgba(20,40,45,.04)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.kpi{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--act);border-radius:12px;padding:10px 12px}
+.kpi .v{font-size:22px;font-weight:800}
+.kpi .l{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.kpi.gold{border-left-color:var(--brass)} .kpi.bad{border-left-color:var(--bad)} .kpi.blue{border-left-color:var(--blue)} .kpi.warn{border-left-color:var(--warn)}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff}
+th{background:#F2EFE7;text-align:left;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:9px 10px;white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:9px 10px;border-bottom:1px solid #EEEBE2;vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.03em;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.b-grey{background:#EDEAE1;color:#4C5A5F}.b-act{background:var(--actBg);color:var(--act)}.b-ok{background:var(--okBg);color:var(--ok)}.b-warn{background:var(--warnBg);color:var(--warn)}.b-bad{background:var(--badBg);color:var(--bad)}.b-blue{background:var(--blueBg);color:var(--blue)}.b-gold{background:var(--brassBg);color:#8a6410}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.chip.on{background:var(--deep);border-color:var(--deep);color:#fff}
+.alert{border-radius:10px;padding:9px 12px;font-size:13.5px;margin:6px 0;display:flex;gap:8px;align-items:flex-start}
+.a-bad{background:var(--badBg);color:#7c3021}.a-warn{background:var(--warnBg);color:#7a4c0a}.a-ok{background:var(--okBg);color:#155a34}.a-blue{background:var(--blueBg);color:#1f4569}
+.mini{font-size:12px;color:var(--muted)}
+.hr{border:0;border-top:1px solid var(--line);margin:12px 0}
+.right{text-align:right}
+.money{font-variant-numeric:tabular-nums}
+.linkish{background:none;border:0;color:var(--act);font-weight:700;text-decoration:underline;padding:0;font-size:inherit}
+/* modal */
+#mwrap{position:fixed;inset:0;background:rgba(14,42,51,.55);z-index:50;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:18px 10px}
+#mwrap.open{display:flex}
+#modal{background:#fff;border-radius:16px;max-width:760px;width:100%;margin:auto 0}
+#modal .mh{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+#modal .mh h2{flex:1}
+#modal .mb{padding:6px 16px 16px;max-height:72vh;overflow:auto}
+#modal .mf{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line)}
+/* login */
+#login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--deep) 0%, #143d4a 60%, #0c222a 100%);padding:20px}
+#login .box{background:#fff;border-radius:18px;padding:26px 24px;max-width:400px;width:100%}
+#login .mark{text-align:center;margin-bottom:14px}
+#login .mark .t1{font-weight:800;letter-spacing:.2em;font-size:18px;color:var(--deep)}
+#login .mark .t2{font-size:10px;letter-spacing:.32em;color:var(--brass);font-weight:700}
+/* bottom nav (mobile) */
+#bnav{display:none;position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--deep);padding:6px 4px calc(6px + env(safe-area-inset-bottom));grid-template-columns:repeat(6,1fr)}
+#bnav a{display:flex;flex-direction:column;align-items:center;gap:2px;color:#9FB6BC;text-decoration:none;font-size:10.5px;font-weight:700;padding:6px 2px;border-radius:8px;min-height:50px;justify-content:center}
+#bnav a.on{color:var(--brass)}
+#bnav .ico{font-size:17px}
+@media(max-width:860px){
+  #nav{display:none}
+  #bnav{display:grid}
+  #main{padding:12px 12px 130px}
+  .grid2,.grid3{grid-template-columns:1fr}
+}
+@media print{ body{background:#fff} #topbar,#nav,#bnav,.noprint{display:none!important} #main{padding:0;max-width:none} .card{border:0;box-shadow:none} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="mwrap"><div id="modal"><div class="mh"><h2 id="mtitle"></h2><button class="btn sm grey" onclick="A.closeModal()">✕</button></div><div class="mb" id="mbody"></div><div class="mf" id="mfoot"></div></div></div>
+<script>
+"use strict";
+/* ============================================================
+   DISCOVERY ASIA OS — Phase 1 MVP (GitHub Pages build)
+   Single file · no server · data in this device's localStorage
+   ============================================================ */
+var DBKEY="daos1", SESKEY="daos-session";
+var db=null, session=null;
+
+function blankDB(){return {
+  v:1,
+  settings:{
+    company:"Discovery Asia Co., Ltd.", addr:"Bangkok, Thailand",
+    phone:"+66 90 401 7468", whatsapp:"+66 85 929 0648", email:"info@discoveryasia.co.th", web:"discoveryasia.co.th",
+    cur:"USD", minMargin:12, tax:0, payFee:0, prefix:"DA", defCity:"BKK",
+    pwd:{admin:"DA-Admin-2026",md:"DA-MD-2026",sales:"DA-Sales-2026",resv:"DA-Resv-2026",ops:"DA-Ops-2026",acct:"DA-Acct-2026"}
+  },
+  agents:[], inquiries:[], suppliers:[], contracts:[], quotes:[], bookings:[],
+  receipts:[], payments:[], audit:[], counters:{}, seq:0
+};}
+function load(){ try{var j=JSON.parse(localStorage.getItem(DBKEY)); if(j&&j.settings){ if(!j.counters)j.counters={}; if(!j.seq)j.seq=0; return j; } }catch(e){} return blankDB(); }
+function save(){ try{ localStorage.setItem(DBKEY,JSON.stringify(db)); }catch(e){ alert("Could not save — device storage may be full. Export a backup from Settings."); } }
+function uid(){ db.seq=(db.seq||0)+1; return Date.now().toString(36)+"-"+db.seq.toString(36)+Math.random().toString(36).slice(2,5); }
+
+/* ---------- helpers ---------- */
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function n2(x){ x=parseFloat(x); return isFinite(x)?x:0; }
+function money(x){ var v=n2(x); return db.settings.cur+" "+v.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function money0(x){ var v=n2(x); return db.settings.cur+" "+v.toLocaleString("en-US",{maximumFractionDigits:0}); }
+function todayISO(){ var d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function fdate(iso){ if(!iso)return "—"; var p=iso.split("-"); if(p.length<3)return esc(iso); var M=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return p[2]+" "+M[(+p[1]||1)-1]+" "+p[0]; }
+function daysDiff(a,b){ try{ return Math.round((new Date(b)-new Date(a))/86400000); }catch(e){ return 0; } }
+function byId(list,id){ for(var i=0;i<list.length;i++) if(list[i].id===id) return list[i]; return null; }
+function pushAudit(action,ref){ db.audit.unshift({at:new Date().toISOString(),by:session?session.name:"?",role:session?session.role:"?",action:action,ref:ref||""}); if(db.audit.length>800)db.audit.length=800; }
+function statusBadge(s,map){ var c=map[s]||"b-grey"; return '<span class="badge '+c+'">'+esc(s)+'</span>'; }
+
+/* ---------- roles ---------- */
+var ROLES={admin:"Super Admin",md:"Managing Director",sales:"Sales",resv:"Reservations",ops:"Operations",acct:"Accounts"};
+function canFinance(){ return session&&(session.role==="admin"||session.role==="md"||session.role==="acct"); }
+function canSettings(){ return session&&(session.role==="admin"||session.role==="md"); }
+function canProfit(){ return canFinance(); }
+
+/* ---------- quotation math ---------- */
+function qCalc(q){
+  var pax=Math.max(1,n2(q.adults)+n2(q.children));
+  var net=0; (q.lines||[]).forEach(function(l){ net+= n2(l.qty)*n2(l.unit)*(l.basis==="pp"?pax:1); });
+  var mu=0;
+  if(q.muMode==="pct") mu=net*n2(q.muVal)/100;
+  else if(q.muMode==="pp") mu=n2(q.muVal)*pax;
+  else mu=n2(q.muVal);
+  var sub=net+mu;
+  var tax=sub*n2(q.tax)/100, fee=sub*n2(q.fee)/100;
+  var sell=sub+tax+fee;
+  var gp=mu; var margin= sell>0 ? gp/sell*100 : 0;
+  return {pax:pax,net:net,mu:mu,tax:tax,fee:fee,sell:sell,pp:sell/pax,gp:gp,margin:margin};
+}
+
+/* ---------- booking finance ---------- */
+function bkReceived(b){ var t=0; db.receipts.forEach(function(r){ if(r.bookingId===b.id) t+=n2(r.amount); }); return t; }
+function svcPaid(b,sid){ var t=0; db.payments.forEach(function(p){ if(p.bookingId===b.id&&p.serviceId===sid) t+=n2(p.amount); }); return t; }
+function bkPayable(b){ var c=0,p=0; (b.services||[]).forEach(function(s){ c+=n2(s.cost); p+=svcPaid(b,s.id); }); return {cost:c,paid:p,due:c-p}; }
+function activeBk(b){ return b.status!=="Cancelled"; }
+
+function genBookingId(city){
+  var code=(city||db.settings.defCity||"BKK").toUpperCase().replace(/[^A-Z]/g,"").slice(0,3)||"BKK";
+  var yr=new Date().getFullYear();
+  var key=code+"-"+yr;
+  var n=(db.counters[key]||0)+1; db.counters[key]=n;
+  return db.settings.prefix+"-"+code+"-"+yr+"-"+String(n).padStart(5,"0");
+}
+
+/* ---------- modal ---------- */
+function openModal(title,body,buttons){
+  document.getElementById("mtitle").textContent=title;
+  document.getElementById("mbody").innerHTML=body;
+  document.getElementById("mfoot").innerHTML=buttons||('<button class="btn grey" onclick="A.closeModal()">Cancel</button>');
+  document.getElementById("mwrap").classList.add("open");
+}
+function gv(id){ var e=document.getElementById(id); return e?e.value.trim():""; }
+function gn(id){ return n2(gv(id)); }
+function inp(id,label,val,type,ph){ return '<label for="'+id+'">'+esc(label)+'</label><input id="'+id+'" type="'+(type||"text")+'" value="'+esc(val==null?"":val)+'" placeholder="'+esc(ph||"")+'">'; }
+function sel(id,label,val,opts){ var h='<label for="'+id+'">'+esc(label)+'</label><select id="'+id+'">'; opts.forEach(function(o){ var v=Array.isArray(o)?o[0]:o, t=Array.isArray(o)?o[1]:o; h+='<option value="'+esc(v)+'"'+(String(v)===String(val)?" selected":"")+'>'+esc(t)+'</option>'; }); return h+'</select>'; }
+function ta(id,label,val){ return '<label for="'+id+'">'+esc(label)+'</label><textarea id="'+id+'">'+esc(val||"")+'</textarea>'; }
+
+/* ============================================================ ROUTER ============================================================ */
+var NAV=[
+  {grp:"OVERVIEW"},
+  {h:"#/dash",t:"Dashboard",no:"12",ico:"📊"},
+  {grp:"SALES"},
+  {h:"#/crm",t:"Sales & CRM",no:"01",ico:"👥"},
+  {h:"#/agents",t:"Agents & Clients",no:"01",ico:"🏢"},
+  {h:"#/quotes",t:"Quotations",no:"02",ico:"🧮"},
+  {grp:"PRODUCT"},
+  {h:"#/suppliers",t:"Suppliers",no:"04",ico:"🚚"},
+  {h:"#/contracts",t:"Hotel Contracts",no:"05",ico:"🏨"},
+  {grp:"OPERATE"},
+  {h:"#/bookings",t:"Bookings",no:"06",ico:"🧾"},
+  {h:"#/ops",t:"Operations",no:"08",ico:"🗓️"},
+  {grp:"CONTROL"},
+  {h:"#/finance",t:"Finance",no:"11",ico:"💰",fin:true},
+  {h:"#/settings",t:"Settings",no:"—",ico:"⚙️"}
+];
+function route(){ return location.hash||"#/dash"; }
+window.addEventListener("hashchange",render);
+
+function render(){
+  var app=document.getElementById("app");
+  if(!session){ app.innerHTML=loginView(); return; }
+  var r=route(), page=r.split("/")[1]||"dash", arg=r.split("/")[2]||"";
+  var navH='';
+  NAV.forEach(function(n){
+    if(n.grp){ navH+='<div class="grp">'+n.grp+'</div>'; return; }
+    if(n.fin&&!canFinance())return;
+    var on=r.indexOf(n.h)===0 || (n.h==="#/quotes"&&page==="quote") || (n.h==="#/bookings"&&page==="booking");
+    navH+='<a class="'+(on?"on":"")+'" href="'+n.h+'"><span class="mno">'+n.no+'</span>'+esc(n.t)+'</a>';
+  });
+  var bn=[["#/dash","📊","Dash"],["#/crm","👥","CRM"],["#/quotes","🧮","Quotes"],["#/bookings","🧾","Bookings"],["#/ops","🗓️","Ops"],canFinance()?["#/finance","💰","Finance"]:["#/settings","⚙️","Settings"]];
+  var bnavH=bn.map(function(x){ var on=r.indexOf(x[0])===0||(x[0]==="#/quotes"&&page==="quote")||(x[0]==="#/bookings"&&page==="booking"); return '<a class="'+(on?"on":"")+'" href="'+x[0]+'"><span class="ico">'+x[1]+'</span>'+x[2]+'</a>'; }).join("");
+  var body="";
+  if(page==="dash")body=dashView();
+  else if(page==="crm")body=crmView();
+  else if(page==="agents")body=agentsView();
+  else if(page==="suppliers")body=suppliersView();
+  else if(page==="contracts")body=contractsView();
+  else if(page==="quotes")body=quotesView();
+  else if(page==="quote")body=quoteEditView(arg);
+  else if(page==="bookings")body=bookingsView();
+  else if(page==="booking")body=bookingView(arg);
+  else if(page==="ops")body=opsView();
+  else if(page==="finance")body=canFinance()?financeView():'<div class="card">Finance is available to Managing Director, Accounts and Super Admin.</div>';
+  else if(page==="settings")body=settingsView();
+  else body=dashView();
+  app.innerHTML=
+    '<div id="topbar"><div class="brand">DISCOVERY ASIA<small>OPERATING SYSTEM</small></div><div class="sp"></div>'+
+    '<div class="who">'+esc(session.name)+'<br>'+esc(ROLES[session.role])+'</div>'+
+    '<button class="btn sm gold" onclick="A.logout()">Log out</button></div>'+
+    '<div id="shell"><nav id="nav">'+navH+'</nav><main id="main">'+body+'</main></div>'+
+    '<nav id="bnav">'+bnavH+'</nav>';
+}
+
+/* ============================================================ LOGIN ============================================================ */
+function loginView(){
+  var empty=db.agents.length===0&&db.suppliers.length===0&&db.quotes.length===0;
+  return '<div id="login"><div class="box">'+
+    '<div class="mark"><div class="t1">DISCOVERY ASIA</div><div class="t2">OPERATING SYSTEM</div></div>'+
+    '<div class="mini" style="text-align:center;margin-bottom:10px">Phase 1 · Core Operating System</div>'+
+    inp("li_name","Your name","","text","e.g. Bayazid")+
+    sel("li_role","Team role","sales",Object.keys(ROLES).map(function(k){return [k,ROLES[k]];}))+
+    inp("li_pw","Access password","","password","Role password")+
+    '<div style="margin-top:14px"><button class="btn" style="width:100%" onclick="A.login()">Sign in</button></div>'+
+    (empty?'<div style="margin-top:8px"><button class="btn ghost" style="width:100%" onclick="A.seedDemo(true)">Load demo data (Thailand DMC sample)</button></div>':'')+
+    '<div class="mini" style="margin-top:12px;text-align:center">Data is stored on this device. Export a JSON backup weekly from Settings.</div>'+
+  '</div></div>';
+}
+
+/* ============================================================ DASHBOARD (Module 12) ============================================================ */
+function inRange(d,a,b){ return d&&d>=a&&d<=b; }
+function dashView(){
+  var t=todayISO();
+  var mStart=t.slice(0,8)+"01";
+  var d30=new Date(); d30.setDate(d30.getDate()+30);
+  var e30=d30.getFullYear()+"-"+String(d30.getMonth()+1).padStart(2,"0")+"-"+String(d30.getDate()).padStart(2,"0");
+  function bucket(list){ var bk=0,pax=0,sell=0,cost=0; list.forEach(function(b){ bk++; pax+=n2(b.adults)+n2(b.children); sell+=n2(b.sell); cost+=bkPayable(b).cost; }); return {bk:bk,pax:pax,sell:sell,cost:cost,gp:sell-cost}; }
+  var act=db.bookings.filter(activeBk);
+  var today=bucket(act.filter(function(b){return inRange(b.start,t,t)||(b.start<=t&&b.end>=t);}));
+  var month=bucket(act.filter(function(b){return b.start&&b.start.slice(0,7)===t.slice(0,7);}));
+  var next=bucket(act.filter(function(b){return b.start&&b.start>t&&b.start<=e30;}));
+  var recv=0,pay=0;
+  act.forEach(function(b){ recv+=n2(b.sell)-bkReceived(b); var p=bkPayable(b); pay+=p.due; });
+
+  /* alerts */
+  var alerts=[];
+  db.inquiries.forEach(function(i){ if(i.status!=="Confirmed"&&i.status!=="Lost"&&i.follow&&i.follow<t) alerts.push(['a-warn','Follow-up overdue — '+i.client+' ('+i.status+'), due '+fdate(i.follow),'#/crm']); });
+  db.contracts.forEach(function(c){ if(c.to&&c.to<t) alerts.push(['a-warn','Hotel contract expired — '+c.hotel+' ('+c.roomCat+'), valid to '+fdate(c.to),'#/contracts']); });
+  act.forEach(function(b){
+    ["deposit","final","rooming","release"].forEach(function(k){
+      var d=b.deadlines&&b.deadlines[k]; if(!d)return;
+      var lbl={deposit:"Deposit",final:"Final payment",rooming:"Rooming list",release:"Release / cancellation"}[k];
+      if(d<t) alerts.push(['a-bad',b.ref+' — '+lbl+' deadline passed ('+fdate(d)+')','#/booking/'+b.id]);
+      else if(daysDiff(t,d)<=7) alerts.push(['a-warn',b.ref+' — '+lbl+' due '+fdate(d),'#/booking/'+b.id]);
+    });
+    (b.services||[]).forEach(function(s){ if(s.date&&s.date>=t&&daysDiff(t,s.date)<=3&&s.status!=="Confirmed"&&s.status!=="Completed") alerts.push(['a-bad',b.ref+' — "'+s.desc+'" starts '+fdate(s.date)+' and is not confirmed','#/booking/'+b.id]); });
+  });
+  db.quotes.forEach(function(q){ if(q.status==="Draft"||q.status==="Sent"){ var c=qCalc(q); if(c.sell>0&&c.margin<n2(db.settings.minMargin)) alerts.push(['a-warn',q.ref+' — margin '+c.margin.toFixed(1)+'% is below the '+db.settings.minMargin+'% minimum','#/quote/'+q.id]); }});
+  if(canFinance()){
+    act.forEach(function(b){
+      (b.services||[]).forEach(function(s){ if(s.due&&s.due<t&&svcPaid(b,s.id)<n2(s.cost)) alerts.push(['a-bad',b.ref+' — supplier payment overdue: '+s.desc+' ('+money(n2(s.cost)-svcPaid(b,s.id))+')','#/finance']); });
+      if(b.start&&b.start>=t&&daysDiff(t,b.start)<=7&&bkReceived(b)<n2(b.sell)) alerts.push(['a-bad',b.ref+' arrives '+fdate(b.start)+' with '+money(n2(b.sell)-bkReceived(b))+' unpaid','#/finance']);
+    });
+  }
+
+  function kpiRow(title,x,showFin){
+    var h='<div class="card"><h2>'+title+'</h2><div class="kpis" style="margin-bottom:0">'+
+      '<div class="kpi"><div class="v">'+x.bk+'</div><div class="l">Bookings</div></div>'+
+      '<div class="kpi blue"><div class="v">'+x.pax+'</div><div class="l">Passengers</div></div>';
+    if(showFin) h+='<div class="kpi gold"><div class="v">'+money0(x.sell)+'</div><div class="l">Sales</div></div>'+
+      '<div class="kpi"><div class="v">'+money0(x.cost)+'</div><div class="l">Cost</div></div>'+
+      '<div class="kpi '+(x.gp>=0?'':'bad')+'"><div class="v">'+money0(x.gp)+'</div><div class="l">Gross profit'+(x.sell>0?' · '+(x.gp/x.sell*100).toFixed(1)+'%':'')+'</div></div>';
+    return h+'</div></div>';
+  }
+  var fin=canProfit();
+  var h='<h1>Managing Director view</h1><div class="sub">'+fdate(t)+' · '+esc(db.settings.company)+'</div>';
+  if(!fin)h='<h1>Dashboard</h1><div class="sub">'+fdate(t)+'</div>';
+  h+=kpiRow("Today / in-house",today,fin)+kpiRow("This month (by arrival)",month,fin)+kpiRow("Upcoming 30 days",next,fin);
+  if(fin) h+='<div class="kpis"><div class="kpi gold"><div class="v">'+money0(recv)+'</div><div class="l">Receivable</div></div><div class="kpi warn"><div class="v">'+money0(pay)+'</div><div class="l">Supplier payable</div></div><div class="kpi '+(recv-pay>=0?'':'bad')+'"><div class="v">'+money0(recv-pay)+'</div><div class="l">Net cash position</div></div></div>';
+  h+='<div class="card"><h2>Critical alerts ('+alerts.length+')</h2>';
+  if(!alerts.length)h+='<div class="alert a-ok">✔ No open alerts. Deadlines, margins and confirmations are all inside limits.</div>';
+  alerts.slice(0,25).forEach(function(a){ h+='<div class="alert '+a[0]+'"><span>⚠</span><span style="flex:1">'+esc(a[1])+'</span><a href="'+a[2]+'" class="mini">Open →</a></div>'; });
+  h+='</div>';
+  return h;
+}
+
+/* ============================================================ CRM (Module 01) ============================================================ */
+var PIPE=["New Inquiry","Working","Quotation Sent","Negotiation","Tentative","Confirmed","Lost"];
+var PIPE_B={"New Inquiry":"b-blue","Working":"b-act","Quotation Sent":"b-gold","Negotiation":"b-warn","Tentative":"b-grey","Confirmed":"b-ok","Lost":"b-bad"};
+var crmF="Open";
+function crmView(){
+  var t=todayISO();
+  var list=db.inquiries.slice().sort(function(a,b){return (b.created||"").localeCompare(a.created||"");});
+  var open=list.filter(function(i){return i.status!=="Confirmed"&&i.status!=="Lost";});
+  var overdue=open.filter(function(i){return i.follow&&i.follow<t;});
+  var shown= crmF==="Open"?open : crmF==="Overdue"?overdue : crmF==="All"?list : list.filter(function(i){return i.status===crmF;});
+  var h='<div class="row"><h1 style="flex:1">Sales & CRM</h1><button class="btn" onclick="A.editInq(\'\')">＋ New inquiry</button></div>'+
+    '<div class="sub">Pipeline: New Inquiry → Working → Quotation Sent → Negotiation → Tentative → Confirmed / Lost</div>'+
+    '<div class="kpis"><div class="kpi"><div class="v">'+open.length+'</div><div class="l">Open inquiries</div></div>'+
+    '<div class="kpi bad"><div class="v">'+overdue.length+'</div><div class="l">Overdue follow-ups</div></div>'+
+    '<div class="kpi gold"><div class="v">'+list.filter(function(i){return i.status==="Confirmed";}).length+'</div><div class="l">Confirmed</div></div>'+
+    '<div class="kpi"><div class="v">'+(list.length?Math.round(list.filter(function(i){return i.status==="Confirmed";}).length/list.length*100):0)+'%</div><div class="l">Conversion</div></div></div>';
+  h+='<div class="chips">'+["Open","Overdue","All"].concat(PIPE).map(function(f){return '<button class="chip '+(crmF===f?"on":"")+'" onclick="A.crmFilter(\''+f+'\')">'+f+'</button>';}).join("")+'</div>';
+  if(!shown.length)h+='<div class="card">No inquiries here yet. Create the first one with “＋ New inquiry”.</div>';
+  shown.forEach(function(i){
+    var ag=byId(db.agents,i.agentId);
+    h+='<div class="card"><div class="row"><b style="flex:1">'+esc(i.client)+(ag?' <span class="mini">· '+esc(ag.name)+'</span>':'')+'</b>'+statusBadge(i.status,PIPE_B)+'</div>'+
+    '<div class="mini">'+esc(i.dest||"—")+' · '+fdate(i.start)+' → '+fdate(i.end)+' · '+n2(i.adults)+'A'+(n2(i.children)?'+'+n2(i.children)+'C':'')+' · '+esc(i.market||"")+' · Source: '+esc(i.source||"—")+' · Owner: '+esc(i.owner||"—")+'</div>'+
+    (i.req?'<div class="mini" style="margin-top:4px">'+esc(i.req)+'</div>':'')+
+    (i.follow?'<div class="mini" style="margin-top:4px">Follow-up: <b style="color:'+(i.follow<t?'var(--bad)':'var(--act)')+'">'+fdate(i.follow)+'</b></div>':'')+
+    (i.status==="Lost"&&i.lost?'<div class="mini">Lost reason: '+esc(i.lost)+'</div>':'')+
+    '<div class="row" style="margin-top:8px"><button class="btn sm ghost" onclick="A.editInq(\''+i.id+'\')">Edit</button>'+
+    '<button class="btn sm deep" onclick="A.quoteFromInq(\''+i.id+'\')">Create quotation</button>'+
+    '<button class="btn sm grey" onclick="A.inqNote(\''+i.id+'\')">＋ Note</button></div>'+
+    ((i.notesLog||[]).length?'<div class="mini" style="margin-top:6px">'+(i.notesLog||[]).slice(0,3).map(function(nn){return '• '+esc(nn);}).join("<br>")+'</div>':'')+
+    '</div>';
+  });
+  return h;
+}
+function inqForm(i){
+  return '<div class="grid2">'+
+  inp("f_client","Client / group name",i.client)+
+  sel("f_agent","Agent / company",i.agentId||"",[["","— Direct client —"]].concat(db.agents.map(function(a){return[a.id,a.name];})))+
+  inp("f_market","Market / nationality",i.market,"text","e.g. Bangladesh, India, GCC")+
+  sel("f_source","Lead source",i.source||"Referral",["Referral","Repeat client","B2B agent","Website","WhatsApp","Facebook","Instagram","Email campaign","Trade fair","Walk-in","Other"])+
+  inp("f_dest","Destinations",i.dest,"text","Bangkok + Pattaya")+
+  inp("f_owner","Inquiry owner (salesperson)",i.owner||session.name)+
+  inp("f_start","Travel start",i.start,"date")+
+  inp("f_end","Travel end",i.end,"date")+
+  inp("f_ad","Adults",i.adults==null?2:i.adults,"number")+
+  inp("f_ch","Children",i.children||0,"number")+
+  inp("f_budget","Budget (per person, optional)",i.budget)+
+  sel("f_hcat","Hotel category",i.hcat||"4-star",["3-star","4-star","5-star","Mixed","Luxury"])+
+  sel("f_status","Pipeline status",i.status||"New Inquiry",PIPE)+
+  inp("f_follow","Next follow-up",i.follow,"date")+
+  '</div>'+ta("f_req","Requirements / remarks",i.req)+
+  '<div id="lostwrap">'+inp("f_lost","Lost reason (only if Lost)",i.lost)+'</div>';
+}
+/* ============================================================ AGENTS ============================================================ */
+function agentsView(){
+  var h='<div class="row"><h1 style="flex:1">Agents & Clients</h1><button class="btn" onclick="A.editAgent(\'\')">＋ Add agent / client</button></div><div class="sub">B2B agents, corporate clients and direct customer profiles.</div>';
+  if(!db.agents.length)h+='<div class="card">No profiles yet.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Name</th><th>Type</th><th>Country / market</th><th>Contact</th><th>Terms</th><th></th></tr>';
+    db.agents.forEach(function(a){
+      h+='<tr><td><b>'+esc(a.name)+'</b><div class="mini">'+esc(a.person||"")+'</div></td><td>'+esc(a.type)+'</td><td>'+esc(a.country||"")+'</td><td class="mini">'+esc(a.phone||"")+(a.email?'<br>'+esc(a.email):'')+'</td><td class="mini">'+esc(a.terms||"")+'</td><td><button class="btn sm ghost" onclick="A.editAgent(\''+a.id+'\')">Edit</button></td></tr>';
+    });
+    h+='</table></div>';
+  }
+  return h;
+}
+/* ============================================================ SUPPLIERS (Module 04) ============================================================ */
+var SUPCATS=["Hotel","Transport","Tour / Attraction","Restaurant","Guide","Cruise / Boat","MICE / Event","Insurance","Local DMC","Other"];
+function suppliersView(){
+  var h='<div class="row"><h1 style="flex:1">Supplier database</h1><button class="btn" onclick="A.editSup(\'\')">＋ Add supplier</button></div><div class="sub">One reliable source for supplier contacts, rates, terms and quality.</div>';
+  if(!db.suppliers.length)h+='<div class="card">No suppliers yet.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Supplier</th><th>Category</th><th>Destination</th><th>Contact</th><th>Payment terms</th><th>Rating</th><th></th></tr>';
+    db.suppliers.forEach(function(s){
+      h+='<tr><td><b>'+esc(s.name)+'</b>'+(s.pref?' <span class="badge b-gold">Preferred</span>':'')+(s.status==="Inactive"?' <span class="badge b-bad">Inactive</span>':'')+'</td><td>'+esc(s.cat)+'</td><td>'+esc(s.dest||"")+'</td><td class="mini">'+esc(s.phone||"")+(s.email?'<br>'+esc(s.email):'')+'</td><td class="mini">'+esc(s.terms||"")+'</td><td>'+"★".repeat(n2(s.rating)||0)+'</td><td><button class="btn sm ghost" onclick="A.editSup(\''+s.id+'\')">Edit</button></td></tr>';
+    });
+    h+='</table></div>';
+  }
+  return h;
+}
+/* ============================================================ HOTEL CONTRACTS (Module 05) ============================================================ */
+function contractsView(){
+  var t=todayISO();
+  var h='<div class="row"><h1 style="flex:1">Hotel contracts & rates</h1><button class="btn" onclick="A.editCon(\'\')">＋ Add contract rate</button></div><div class="sub">Seasonal contracted rates. Expired contracts are flagged, never silently used.</div>';
+  if(!db.contracts.length)h+='<div class="card">No hotel contracts yet.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Hotel</th><th>Room / basis</th><th>Type</th><th>Validity</th><th class="num">DBL/TWN</th><th class="num">SGL</th><th class="num">TRP</th><th class="num">Ex-bed</th><th></th></tr>';
+    db.contracts.forEach(function(c){
+      var exp=c.to&&c.to<t;
+      h+='<tr><td><b>'+esc(c.hotel)+'</b><div class="mini">'+esc(c.dest||"")+' · '+esc(c.star||"")+'</div></td>'+
+      '<td>'+esc(c.roomCat)+'<div class="mini">'+esc(c.meal||"")+'</div></td><td>'+esc(c.rtype||"FIT")+'</td>'+
+      '<td>'+fdate(c.from)+' → '+fdate(c.to)+(exp?'<br><span class="badge b-bad">Expired</span>':'<br><span class="badge b-ok">Valid</span>')+'</td>'+
+      '<td class="num">'+money(c.dbl)+'</td><td class="num">'+money(c.sgl)+'</td><td class="num">'+money(c.trp)+'</td><td class="num">'+money(c.exb)+'</td>'+
+      '<td><button class="btn sm ghost" onclick="A.editCon(\''+c.id+'\')">Edit</button></td></tr>';
+      if(c.policy)h+='<tr><td colspan="9" class="mini">Policy: '+esc(c.policy)+'</td></tr>';
+    });
+    h+='</table></div>';
+  }
+  return h;
+}
+/* ============================================================ QUOTATIONS (Module 02) ============================================================ */
+var QSTAT={Draft:"b-grey",Sent:"b-blue",Approved:"b-ok",Rejected:"b-bad",Booked:"b-gold"};
+function quotesView(){
+  var h='<div class="row"><h1 style="flex:1">Quotations</h1><button class="btn" onclick="A.newQuote(\'\')">＋ New quotation</button></div><div class="sub">Net cost + markup + taxes + payment charges = selling price. Margin guardrail: minimum '+db.settings.minMargin+'%.</div>';
+  var list=db.quotes.slice().sort(function(a,b){return (b.created||"").localeCompare(a.created||"");});
+  if(!list.length)h+='<div class="card">No quotations yet.</div>';
+  list.forEach(function(q){
+    var c=qCalc(q), low=c.sell>0&&c.margin<n2(db.settings.minMargin);
+    var ag=byId(db.agents,q.agentId);
+    h+='<div class="card"><div class="row"><b style="flex:1">'+esc(q.ref)+' · '+esc(q.client)+'</b>'+statusBadge(q.status,QSTAT)+'</div>'+
+    '<div class="mini">'+(ag?esc(ag.name)+' · ':'')+esc(q.dest||"—")+' · '+fdate(q.start)+' → '+fdate(q.end)+' · '+c.pax+' pax · v'+(q.version||1)+'</div>'+
+    '<div class="row" style="margin-top:6px"><span class="money"><b>'+money(c.sell)+'</b> <span class="mini">total</span></span><span class="money">'+money(c.pp)+' <span class="mini">per person</span></span>'+
+    (canProfit()?'<span class="badge '+(low?'b-bad':'b-ok')+'">GP '+c.margin.toFixed(1)+'%</span>':'')+'</div>'+
+    (low?'<div class="alert a-warn" style="margin-top:6px">Margin below company minimum — review before releasing.</div>':'')+
+    '<div class="row" style="margin-top:8px"><a class="btn sm" href="#/quote/'+q.id+'">Open</a>'+
+    '<button class="btn sm ghost" onclick="A.printProposal(\''+q.id+'\')">Proposal PDF</button>'+
+    (q.status!=="Booked"?'<button class="btn sm gold" onclick="A.toBooking(\''+q.id+'\')">Convert to booking</button>':'')+'</div></div>';
+  });
+  return h;
+}
+var COSTCATS=["Hotel","Transport","Tour","Meal","Guide","Entrance fees","Insurance","Operational","Other"];
+function quoteEditView(id){
+  var q=byId(db.quotes,id); if(!q)return '<div class="card">Quotation not found. <a href="#/quotes">Back</a></div>';
+  var c=qCalc(q), t=todayISO();
+  var h='<div class="row"><h1 style="flex:1">'+esc(q.ref)+' <span class="mini">v'+(q.version||1)+'</span></h1>'+statusBadge(q.status,QSTAT)+'</div>'+
+  '<div class="sub"><a href="#/quotes">← All quotations</a></div>';
+  /* header card */
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Trip header</h2><button class="btn sm ghost" onclick="A.editQHead(\''+q.id+'\')">Edit header</button></div>'+
+  '<div class="mini">'+esc(q.client)+' · '+(byId(db.agents,q.agentId)?esc(byId(db.agents,q.agentId).name):'Direct')+' · '+esc(q.market||"")+'</div>'+
+  '<div class="mini">'+esc(q.dest||"—")+' · '+fdate(q.start)+' → '+fdate(q.end)+' · '+n2(q.adults)+' adults'+(n2(q.children)?' + '+n2(q.children)+' children':'')+'</div></div>';
+  /* cost lines */
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Cost build-up (net)</h2><button class="btn sm" onclick="A.editLine(\''+q.id+'\',\'\')">＋ Add cost line</button></div>';
+  if(!(q.lines||[]).length)h+='<div class="mini">No cost lines yet. Add hotel, transport, tours, meals, guide, entrance, insurance and operational costs.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Category</th><th>Description</th><th>Date</th><th class="num">Qty</th><th class="num">Unit cost</th><th>Basis</th><th class="num">Net total</th><th></th></tr>';
+    q.lines.forEach(function(l){
+      var tot=n2(l.qty)*n2(l.unit)*(l.basis==="pp"?c.pax:1);
+      var sup=byId(db.suppliers,l.supplierId);
+      var con=byId(db.contracts,l.contractId);
+      var warn= con&&con.to&&con.to<t ? ' <span class="badge b-bad">Contract expired</span>' : '';
+      h+='<tr><td>'+esc(l.cat)+'</td><td>'+esc(l.desc)+(sup?'<div class="mini">'+esc(sup.name)+'</div>':'')+(con?'<div class="mini">Rate: '+esc(con.hotel)+' '+esc(con.roomCat)+warn+'</div>':'')+'</td><td class="mini">'+(l.date?fdate(l.date):'—')+'</td><td class="num">'+n2(l.qty)+'</td><td class="num">'+money(l.unit)+'</td><td>'+(l.basis==="pp"?'per person':'total')+'</td><td class="num money"><b>'+money(tot)+'</b></td>'+
+      '<td class="right"><button class="btn sm ghost" onclick="A.editLine(\''+q.id+'\',\''+l.id+'\')">Edit</button> <button class="btn sm red" onclick="A.delLine(\''+q.id+'\',\''+l.id+'\')">✕</button></td></tr>';
+    });
+    h+='</table></div>';
+  }
+  h+='</div>';
+  /* pricing */
+  var low=c.sell>0&&c.margin<n2(db.settings.minMargin);
+  var safeSell= c.net>0 ? c.net/(1-n2(db.settings.minMargin)/100) : 0;
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Pricing</h2><button class="btn sm ghost" onclick="A.editPricing(\''+q.id+'\')">Edit markup & taxes</button></div>'+
+  '<div class="tw"><table>'+
+  '<tr><td>Net cost ('+c.pax+' pax)</td><td class="num money">'+money(c.net)+'</td></tr>'+
+  '<tr><td>Markup ('+(q.muMode==="pct"?n2(q.muVal)+"%":q.muMode==="pp"?money(q.muVal)+" per person":"fixed")+')</td><td class="num money">'+money(c.mu)+'</td></tr>'+
+  '<tr><td>Taxes ('+n2(q.tax)+'%)</td><td class="num money">'+money(c.tax)+'</td></tr>'+
+  '<tr><td>Payment charges ('+n2(q.fee)+'%)</td><td class="num money">'+money(c.fee)+'</td></tr>'+
+  '<tr><td><b>Selling price — total</b></td><td class="num money"><b>'+money(c.sell)+'</b></td></tr>'+
+  '<tr><td><b>Selling price — per person</b></td><td class="num money"><b>'+money(c.pp)+'</b></td></tr>'+
+  (canProfit()?'<tr><td>Gross profit</td><td class="num money">'+money(c.gp)+' ('+c.margin.toFixed(1)+'%)</td></tr>':'')+
+  '</table></div>'+
+  (low?'<div class="alert a-warn" style="margin-top:8px">⚠ Gross margin '+c.margin.toFixed(1)+'% is below the company minimum of '+db.settings.minMargin+'%. Minimum safe selling price ≈ <b>'+money(safeSell*(1+n2(q.tax)/100+n2(q.fee)/100))+'</b>.</div>':'')+
+  ((q.lines||[]).length===0?'<div class="alert a-warn" style="margin-top:8px">No costs entered yet — do not release this quotation.</div>':'')+
+  '</div>';
+  /* itinerary */
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Day-by-day itinerary (Module 03)</h2><button class="btn sm" onclick="A.editDay(\''+q.id+'\',-1)">＋ Add day</button></div>';
+  if(!(q.days||[]).length)h+='<div class="mini">No itinerary yet. The proposal prints each day with meals and overnight city.</div>';
+  (q.days||[]).forEach(function(d,ix){
+    h+='<div style="border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0"><div class="row"><b style="flex:1">Day '+(ix+1)+' — '+esc(d.title)+'</b>'+
+    '<button class="btn sm ghost" onclick="A.editDay(\''+q.id+'\','+ix+')">Edit</button><button class="btn sm red" onclick="A.delDay(\''+q.id+'\','+ix+')">✕</button></div>'+
+    '<div class="mini">'+esc(d.desc||"")+'</div><div class="mini" style="margin-top:4px">🍽 '+esc(d.meals||"—")+' · 🏨 Overnight: '+esc(d.city||"—")+'</div></div>';
+  });
+  h+='</div>';
+  /* versions + actions */
+  h+='<div class="card"><h2>Status, versions & output</h2><div class="row">'+
+  '<button class="btn sm grey" onclick="A.setQStatus(\''+q.id+'\',\'Draft\')">Mark Draft</button>'+
+  '<button class="btn sm deep" onclick="A.setQStatus(\''+q.id+'\',\'Sent\')">Mark Sent</button>'+
+  '<button class="btn sm" onclick="A.setQStatus(\''+q.id+'\',\'Approved\')">Approve</button>'+
+  '<button class="btn sm red" onclick="A.setQStatus(\''+q.id+'\',\'Rejected\')">Reject</button>'+
+  '<button class="btn sm ghost" onclick="A.saveVersion(\''+q.id+'\')">💾 Save version snapshot</button>'+
+  '<button class="btn sm ghost" onclick="A.printProposal(\''+q.id+'\')">🖨 Proposal PDF</button>'+
+  (q.status!=="Booked"?'<button class="btn sm gold" onclick="A.toBooking(\''+q.id+'\')">Convert to booking</button>':'<span class="badge b-gold">Booked → <a href="#/booking/'+q.bookingId+'">'+esc((byId(db.bookings,q.bookingId)||{}).ref||"open booking")+'</a></span>')+
+  '</div>';
+  if((q.versions||[]).length){ h+='<div class="mini" style="margin-top:8px">Version history: '+(q.versions||[]).map(function(v){return 'v'+v.n+' ('+fdate(v.at.slice(0,10))+', '+money(v.sell)+')';}).join(" · ")+'</div>'; }
+  h+='</div>';
+  return h;
+}
+/* ============================================================ BOOKINGS (Module 06) ============================================================ */
+var BSTAT={Tentative:"b-grey","On Request":"b-blue",Confirmed:"b-ok","In Operation":"b-gold",Completed:"b-act",Cancelled:"b-bad"};
+var SSTAT={Pending:"b-grey",Requested:"b-blue",Confirmed:"b-ok",Problem:"b-bad",Completed:"b-act"};
+var bkF="Active";
+function bookingsView(){
+  var list=db.bookings.slice().sort(function(a,b){return (b.created||"").localeCompare(a.created||"");});
+  var shown= bkF==="Active"?list.filter(activeBk): bkF==="All"?list: list.filter(function(b){return b.status===bkF;});
+  var h='<div class="row"><h1 style="flex:1">Bookings</h1></div><div class="sub">Every booking carries one unique Booking ID linking commercial, operations and finance.</div>';
+  h+='<div class="chips">'+["Active","All"].concat(Object.keys(BSTAT)).map(function(f){return '<button class="chip '+(bkF===f?"on":"")+'" onclick="A.bkFilter(\''+f+'\')">'+f+'</button>';}).join("")+'</div>';
+  if(!shown.length)h+='<div class="card">No bookings here. Convert an approved quotation to create one.</div>';
+  shown.forEach(function(b){
+    var pax=n2(b.adults)+n2(b.children), recvd=bkReceived(b), pb=bkPayable(b);
+    var conf=(b.services||[]).filter(function(s){return s.status==="Confirmed"||s.status==="Completed";}).length;
+    h+='<div class="card"><div class="row"><b style="flex:1">'+esc(b.ref)+' · '+esc(b.client)+'</b>'+statusBadge(b.status,BSTAT)+'</div>'+
+    '<div class="mini">'+esc(b.dest||"")+' · '+fdate(b.start)+' → '+fdate(b.end)+' · '+pax+' pax · Services confirmed '+conf+'/'+(b.services||[]).length+'</div>'+
+    (canFinance()?'<div class="mini" style="margin-top:4px">Sell '+money(b.sell)+' · Received '+money(recvd)+' · Payable due '+money(pb.due)+'</div>':'')+
+    '<div class="row" style="margin-top:8px"><a class="btn sm" href="#/booking/'+b.id+'">Open control screen</a></div></div>';
+  });
+  return h;
+}
+function bookingView(id){
+  var b=byId(db.bookings,id); if(!b)return '<div class="card">Booking not found. <a href="#/bookings">Back</a></div>';
+  var t=todayISO(), pax=n2(b.adults)+n2(b.children), recvd=bkReceived(b), pb=bkPayable(b);
+  var h='<div class="row"><h1 style="flex:1">'+esc(b.ref)+'</h1>'+statusBadge(b.status,BSTAT)+'</div><div class="sub"><a href="#/bookings">← All bookings</a>'+(b.quoteId?' · from quotation '+esc((byId(db.quotes,b.quoteId)||{}).ref||""):'')+'</div>';
+  /* commercial summary */
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Commercial summary</h2><button class="btn sm ghost" onclick="A.editBk(\''+b.id+'\')">Edit</button></div>'+
+  '<div class="mini">'+esc(b.client)+' · '+(byId(db.agents,b.agentId)?esc(byId(db.agents,b.agentId).name):'Direct')+' · '+esc(b.dest||"")+'</div>'+
+  '<div class="mini">'+fdate(b.start)+' → '+fdate(b.end)+' · '+n2(b.adults)+' adults'+(n2(b.children)?' + '+n2(b.children)+' children':'')+'</div>'+
+  (canFinance()?'<div class="kpis" style="margin-top:10px;margin-bottom:0"><div class="kpi gold"><div class="v">'+money0(b.sell)+'</div><div class="l">Selling</div></div><div class="kpi"><div class="v">'+money0(pb.cost)+'</div><div class="l">Cost</div></div><div class="kpi '+((n2(b.sell)-pb.cost)>=0?'':'bad')+'"><div class="v">'+money0(n2(b.sell)-pb.cost)+'</div><div class="l">Profit</div></div><div class="kpi blue"><div class="v">'+money0(n2(b.sell)-recvd)+'</div><div class="l">Receivable</div></div><div class="kpi warn"><div class="v">'+money0(pb.due)+'</div><div class="l">Payable due</div></div></div>':'')+
+  '</div>';
+  /* status buttons */
+  h+='<div class="card"><h2>Booking status</h2><div class="row">'+Object.keys(BSTAT).map(function(s){return '<button class="btn sm '+(b.status===s?'deep':'grey')+'" onclick="A.setBStatus(\''+b.id+'\',\''+s+'\')">'+s+'</button>';}).join("")+'</div></div>';
+  /* deadlines */
+  var dl=b.deadlines||{};
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Deadlines</h2><button class="btn sm ghost" onclick="A.editDeadlines(\''+b.id+'\')">Edit</button></div><div class="row">';
+  [["deposit","Deposit"],["final","Final payment"],["rooming","Rooming list"],["release","Release / cancellation"]].forEach(function(x){
+    var d=dl[x[0]]; var cls=!d?'b-grey':(d<t?'b-bad':(daysDiff(t,d)<=7?'b-warn':'b-ok'));
+    h+='<span class="badge '+cls+'">'+x[1]+': '+(d?fdate(d):'not set')+'</span>';
+  });
+  h+='</div></div>';
+  /* services */
+  h+='<div class="card"><div class="row"><h2 style="flex:1">Service-by-service confirmation</h2><button class="btn sm" onclick="A.editSvc(\''+b.id+'\',\'\')">＋ Add service</button></div>';
+  if(!(b.services||[]).length)h+='<div class="mini">No services yet.</div>';
+  else{
+    h+='<div class="tw"><table><tr><th>Service</th><th>Date</th><th>Supplier</th><th>Conf #</th>'+(canFinance()?'<th class="num">Cost</th><th>Pay due</th>':'')+'<th>Status</th><th></th></tr>';
+    (b.services||[]).forEach(function(s){
+      var sup=byId(db.suppliers,s.supplierId);
+      h+='<tr><td><b>'+esc(s.desc)+'</b><div class="mini">'+esc(s.cat||"")+'</div></td><td class="mini">'+(s.date?fdate(s.date):'—')+'</td><td class="mini">'+(sup?esc(sup.name):'<span class="badge b-warn">Not assigned</span>')+'</td><td class="mini">'+esc(s.conf||"—")+'</td>'+
+      (canFinance()?'<td class="num money">'+money(s.cost)+'</td><td class="mini">'+(s.due?fdate(s.due):'—')+'</td>':'')+
+      '<td>'+statusBadge(s.status||"Pending",SSTAT)+'</td>'+
+      '<td class="right"><button class="btn sm ghost" onclick="A.editSvc(\''+b.id+'\',\''+s.id+'\')">Edit</button></td></tr>';
+    });
+    h+='</table></div>';
+  }
+  h+='</div>';
+  /* docs */
+  h+='<div class="card"><h2>Documents</h2><div class="row">'+
+  '<button class="btn sm ghost" onclick="A.printVoucher(\''+b.id+'\')">🖨 Service voucher</button>'+
+  (canFinance()?'<button class="btn sm ghost" onclick="A.printInvoice(\''+b.id+'\')">🖨 Invoice</button>':'')+
+  (b.quoteId?'<button class="btn sm ghost" onclick="A.printProposal(\''+b.quoteId+'\')">🖨 Proposal</button>':'')+
+  '</div></div>';
+  /* finance quick view */
+  if(canFinance()){
+    h+='<div class="card"><h2>Payments on this booking</h2>'+
+    '<div class="row"><button class="btn sm" onclick="A.addReceipt(\''+b.id+'\')">＋ Record client receipt</button></div>';
+    var rc=db.receipts.filter(function(r){return r.bookingId===b.id;});
+    if(rc.length){ h+='<div class="tw" style="margin-top:8px"><table><tr><th>Date</th><th>Method</th><th class="num">Amount</th><th>Note</th></tr>'; rc.forEach(function(r){h+='<tr><td>'+fdate(r.date)+'</td><td>'+esc(r.method)+'</td><td class="num money">'+money(r.amount)+'</td><td class="mini">'+esc(r.note||"")+'</td></tr>';}); h+='</table></div>'; }
+    h+='</div>';
+  }
+  /* audit */
+  h+='<div class="card"><h2>Audit history</h2><div class="mini">'+(b.audit||[]).slice(0,10).map(function(a){return fdate(a.at.slice(0,10))+' · '+esc(a.by)+' — '+esc(a.action);}).join("<br>")+'</div></div>';
+  return h;
+}
+/* ============================================================ OPERATIONS (Module 08) ============================================================ */
+var opsRange="week";
+function opsView(){
+  var t=todayISO();
+  var end; if(opsRange==="today")end=t; else { var d=new Date(); d.setDate(d.getDate()+(opsRange==="week"?7:30)); end=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+  var rows=[];
+  db.bookings.filter(activeBk).forEach(function(b){
+    (b.services||[]).forEach(function(s){ if(s.date&&s.date>=t&&s.date<=end) rows.push({b:b,s:s}); });
+    if(b.start&&b.start>=t&&b.start<=end)rows.push({b:b,s:{id:"arr",desc:"ARRIVAL — "+b.client,cat:"Movement",date:b.start,status:b.status==="Confirmed"||b.status==="In Operation"?"Confirmed":"Pending"},sys:true});
+    if(b.end&&b.end>=t&&b.end<=end)rows.push({b:b,s:{id:"dep",desc:"DEPARTURE — "+b.client,cat:"Movement",date:b.end,status:"Pending"},sys:true});
+  });
+  rows.sort(function(a,x){return (a.s.date||"").localeCompare(x.s.date||"");});
+  var probs=rows.filter(function(r){return !r.sys&&(!r.s.supplierId||r.s.status==="Pending"||r.s.status==="Problem");});
+  var h='<h1>Operations control center</h1><div class="sub">Daily command view of every movement and service.</div>';
+  h+='<div class="chips">'+[["today","Today"],["week","Next 7 days"],["month","Next 30 days"]].map(function(x){return '<button class="chip '+(opsRange===x[0]?"on":"")+'" onclick="A.opsRange(\''+x[0]+'\')">'+x[1]+'</button>';}).join("")+'</div>';
+  h+='<div class="kpis"><div class="kpi"><div class="v">'+rows.length+'</div><div class="l">Movements & services</div></div><div class="kpi bad"><div class="v">'+probs.length+'</div><div class="l">Need action</div></div></div>';
+  if(!rows.length)h+='<div class="card">Nothing scheduled in this range.</div>';
+  var lastDate="";
+  rows.forEach(function(r){
+    if(r.s.date!==lastDate){ lastDate=r.s.date; h+='<h2 style="margin:14px 0 6px">'+fdate(lastDate)+(lastDate===t?' <span class="badge b-gold">Today</span>':'')+'</h2>'; }
+    var sup=byId(db.suppliers,r.s.supplierId);
+    h+='<div class="card" style="margin-bottom:8px"><div class="row"><b style="flex:1">'+esc(r.s.desc)+'</b>'+statusBadge(r.s.status||"Pending",SSTAT)+'</div>'+
+    '<div class="mini">'+esc(r.b.ref)+' · '+esc(r.b.client)+' · '+(n2(r.b.adults)+n2(r.b.children))+' pax'+(sup?' · '+esc(sup.name):(!r.sys?' · <span style="color:var(--bad)">no supplier</span>':''))+(r.s.conf?' · Conf '+esc(r.s.conf):'')+'</div>'+
+    '<div class="row" style="margin-top:6px"><a class="btn sm ghost" href="#/booking/'+r.b.id+'">Open booking</a>'+(!r.sys?'<button class="btn sm" onclick="A.editSvc(\''+r.b.id+'\',\''+r.s.id+'\')">Update service</button>':'')+'</div></div>';
+  });
+  return h;
+}
+/* ============================================================ FINANCE (Module 11) ============================================================ */
+function financeView(){
+  var t=todayISO(), act=db.bookings.filter(activeBk);
+  var recvT=0,payT=0,over=0;
+  var h='<h1>Finance & payment tracking</h1><div class="sub">Agent receivables and supplier payables, always tied to a Booking ID.</div>';
+  var r1='<div class="card"><h2>Receivables (clients & agents)</h2><div class="tw"><table><tr><th>Booking</th><th>Client</th><th class="num">Selling</th><th class="num">Received</th><th class="num">Balance</th><th></th></tr>';
+  act.forEach(function(b){
+    var rc=bkReceived(b), bal=n2(b.sell)-rc; recvT+=bal;
+    if(bal<=0.005&&n2(b.sell)>0)return;
+    r1+='<tr><td><a href="#/booking/'+b.id+'">'+esc(b.ref)+'</a><div class="mini">Arr '+fdate(b.start)+'</div></td><td>'+esc(b.client)+'</td><td class="num money">'+money(b.sell)+'</td><td class="num money">'+money(rc)+'</td><td class="num money"><b>'+money(bal)+'</b></td><td><button class="btn sm" onclick="A.addReceipt(\''+b.id+'\')">＋ Receipt</button></td></tr>';
+  });
+  r1+='</table></div></div>';
+  var r2='<div class="card"><h2>Supplier payables</h2><div class="tw"><table><tr><th>Booking</th><th>Service</th><th>Supplier</th><th>Due</th><th class="num">Cost</th><th class="num">Paid</th><th class="num">Balance</th><th></th></tr>';
+  act.forEach(function(b){
+    (b.services||[]).forEach(function(s){
+      var paid=svcPaid(b,s.id), bal=n2(s.cost)-paid; payT+=Math.max(0,bal);
+      if(n2(s.cost)<=0)return;
+      var od=s.due&&s.due<t&&bal>0.005; if(od)over++;
+      if(bal<=0.005)return;
+      var sup=byId(db.suppliers,s.supplierId);
+      r2+='<tr'+(od?' style="background:var(--badBg)"':'')+'><td><a href="#/booking/'+b.id+'">'+esc(b.ref)+'</a></td><td>'+esc(s.desc)+'</td><td class="mini">'+(sup?esc(sup.name):'—')+'</td><td class="mini">'+(s.due?fdate(s.due):'—')+(od?' <span class="badge b-bad">Overdue</span>':'')+'</td><td class="num money">'+money(s.cost)+'</td><td class="num money">'+money(paid)+'</td><td class="num money"><b>'+money(bal)+'</b></td><td><button class="btn sm" onclick="A.addPayment(\''+b.id+'\',\''+s.id+'\')">＋ Pay</button></td></tr>';
+    });
+  });
+  r2+='</table></div></div>';
+  h+='<div class="kpis"><div class="kpi gold"><div class="v">'+money0(recvT)+'</div><div class="l">Receivable</div></div><div class="kpi warn"><div class="v">'+money0(payT)+'</div><div class="l">Payable</div></div><div class="kpi '+(over?'bad':'')+'"><div class="v">'+over+'</div><div class="l">Overdue supplier payments</div></div></div>';
+  h+=r1+r2;
+  /* profitability table */
+  h+='<div class="card"><h2>Profit by booking</h2><div class="tw"><table><tr><th>Booking</th><th class="num">Selling</th><th class="num">Cost</th><th class="num">Gross profit</th><th class="num">GP%</th></tr>';
+  act.forEach(function(b){ var pc=bkPayable(b).cost, gp=n2(b.sell)-pc; h+='<tr><td>'+esc(b.ref)+' <span class="mini">'+esc(b.client)+'</span></td><td class="num money">'+money(b.sell)+'</td><td class="num money">'+money(pc)+'</td><td class="num money">'+money(gp)+'</td><td class="num">'+(n2(b.sell)>0?(gp/n2(b.sell)*100).toFixed(1)+'%':'—')+'</td></tr>'; });
+  h+='</table></div></div>';
+  return h;
+}
+/* ============================================================ SETTINGS ============================================================ */
+function settingsView(){
+  var s=db.settings;
+  var h='<h1>Settings</h1><div class="sub">Company profile, pricing rules, backups and audit.</div>';
+  if(canSettings()){
+    h+='<div class="card"><h2>Company & pricing rules</h2><div class="grid2">'+
+    inp("s_company","Company name",s.company)+inp("s_addr","Address",s.addr)+
+    inp("s_phone","Phone",s.phone)+inp("s_wa","WhatsApp",s.whatsapp)+
+    inp("s_email","Email",s.email)+inp("s_web","Website",s.web)+
+    inp("s_cur","Currency code",s.cur)+inp("s_min","Minimum gross margin %",s.minMargin,"number")+
+    inp("s_tax","Default tax %",s.tax,"number")+inp("s_fee","Default payment charge %",s.payFee,"number")+
+    inp("s_prefix","Booking ID prefix",s.prefix)+inp("s_city","Default city code",s.defCity)+
+    '</div><div class="row" style="margin-top:10px"><button class="btn" onclick="A.saveSettings()">Save settings</button></div></div>';
+  }
+  h+='<div class="card"><h2>Backup (this device)</h2><div class="mini">All data lives in this browser. Export a JSON backup at least weekly and keep it in Google Drive.</div>'+
+  '<div class="row" style="margin-top:8px"><button class="btn" onclick="A.exportBackup()">⬇ Export JSON backup</button>'+
+  '<label class="btn ghost" style="margin:0">⬆ Import backup<input type="file" accept=".json" style="display:none" onchange="A.importBackup(event)"></label>'+
+  (canSettings()?'<button class="btn grey" onclick="A.seedDemo(false)">Load demo data</button>':'')+
+  (canSettings()?'<button class="btn red" onclick="A.wipe()">Erase all data</button>':'')+
+  '</div></div>';
+  if(canSettings()){
+    h+='<div class="card"><h2>Team access passwords</h2><div class="tw"><table><tr><th>Role</th><th>Password</th></tr>'+Object.keys(ROLES).map(function(k){return '<tr><td>'+ROLES[k]+'</td><td><code>'+esc(s.pwd[k])+'</code></td></tr>';}).join("")+'</table></div><div class="mini" style="margin-top:6px">Passwords can be changed by editing a backup file before import, or ask for a settings upgrade.</div></div>';
+  }
+  h+='<div class="card"><h2>Audit log</h2><div class="mini">'+db.audit.slice(0,25).map(function(a){return esc(a.at.replace("T"," ").slice(0,16))+' · '+esc(a.by)+' ('+esc(a.role)+') — '+esc(a.action)+(a.ref?' ['+esc(a.ref)+']':'');}).join("<br>")+'</div></div>';
+  h+='<div class="mini" style="text-align:center;margin-top:10px">Discovery Asia OS · Phase 1 MVP · GitHub Pages build</div>';
+  return h;
+}
+
+/* ============================================================ PRINT DOCUMENTS ============================================================ */
+function docHead(title){
+  var s=db.settings;
+  return '<div style="text-align:center;border-bottom:3px solid #0E2A33;padding-bottom:12px;margin-bottom:16px">'+
+  '<div style="font-size:22px;font-weight:800;letter-spacing:.18em;color:#0E2A33">DISCOVERY ASIA</div>'+
+  '<div style="font-size:9px;letter-spacing:.3em;color:#C99A3C;font-weight:700">DESTINATION MANAGEMENT · THAILAND</div>'+
+  '<div style="font-size:11px;color:#555;margin-top:6px">'+esc(s.company)+' · '+esc(s.addr)+'<br>'+esc(s.email)+' · Tel '+esc(s.phone)+' · WhatsApp '+esc(s.whatsapp)+'</div>'+
+  '<div style="font-size:17px;font-weight:800;color:#0E2A33;margin-top:10px;letter-spacing:.06em">'+title+'</div></div>';
+}
+function openDoc(html,title){
+  var w=window.open("","_blank");
+  if(!w){ alert("Allow pop-ups to print documents."); return; }
+  w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+esc(title)+'</title><style>@page{margin:14mm} body{font-family:Helvetica,Arial,sans-serif;color:#1b2b30;font-size:13px;line-height:1.55;max-width:760px;margin:0 auto;padding:10px} table{border-collapse:collapse;width:100%} th{background:#F2EFE7;text-align:left;font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:7px 8px;border-bottom:1px solid #ddd} td{padding:7px 8px;border-bottom:1px solid #eee;vertical-align:top} .num{text-align:right} .day{border:1px solid #E2DED4;border-radius:10px;margin:8px 0;overflow:hidden;page-break-inside:avoid} .dh{background:#0E2A33;color:#fff;padding:7px 10px;font-weight:700} .dh span{color:#C99A3C} .db{padding:9px 10px} .price{background:#FBF3E2;border:1px solid #C99A3C;border-radius:10px;padding:12px;margin:12px 0} .foot{margin-top:22px;border-top:1px solid #ddd;padding-top:8px;font-size:10.5px;color:#777;text-align:center}</style></head><body>'+html+'<div class="foot">'+esc(db.settings.company)+' · '+esc(db.settings.web)+'</div><script>window.onload=function(){window.print()}<\/script></body></html>');
+  w.document.close();
+}
+function proposalHTML(q){
+  var c=qCalc(q), ag=byId(db.agents,q.agentId);
+  var h=docHead("TRAVEL PROPOSAL");
+  h+='<table><tr><td><b>Proposal</b></td><td>'+esc(q.ref)+' · Version '+(q.version||1)+'</td><td><b>Date</b></td><td>'+fdate(todayISO())+'</td></tr>'+
+  '<tr><td><b>Prepared for</b></td><td>'+esc(q.client)+(ag?' — '+esc(ag.name):'')+'</td><td><b>Guests</b></td><td>'+n2(q.adults)+' adults'+(n2(q.children)?' + '+n2(q.children)+' children':'')+'</td></tr>'+
+  '<tr><td><b>Destinations</b></td><td>'+esc(q.dest||"")+'</td><td><b>Travel dates</b></td><td>'+fdate(q.start)+' – '+fdate(q.end)+'</td></tr></table>';
+  if((q.days||[]).length){
+    h+='<h3 style="margin:16px 0 6px;color:#0E2A33">Day-by-day itinerary</h3>';
+    q.days.forEach(function(d,ix){ h+='<div class="day"><div class="dh"><span>DAY '+(ix+1)+'</span> — '+esc(d.title)+'</div><div class="db">'+esc(d.desc||"")+'<div style="color:#777;font-size:11.5px;margin-top:5px">Meals: '+esc(d.meals||"—")+' · Overnight: '+esc(d.city||"—")+'</div></div></div>'; });
+  }
+  h+='<div class="price"><div style="font-size:11px;letter-spacing:.08em;font-weight:700;color:#8a6410">PACKAGE PRICE</div>'+
+  '<div style="font-size:21px;font-weight:800;color:#0E2A33">'+money(c.pp)+' <span style="font-size:12px;font-weight:600">per person</span></div>'+
+  '<div style="font-size:12.5px;color:#555">Total for '+c.pax+' guests: <b>'+money(c.sell)+'</b></div></div>';
+  h+='<div style="font-size:11.5px;color:#555">Rates are subject to availability at the time of confirmation. Quotation validity: 7 days unless stated otherwise. This proposal was generated by Discovery Asia OS from contracted supplier rates.</div>';
+  return h;
+}
+function voucherHTML(b){
+  var h=docHead("SERVICE VOUCHER");
+  h+='<table><tr><td><b>Booking ID</b></td><td>'+esc(b.ref)+'</td><td><b>Status</b></td><td>'+esc(b.status)+'</td></tr>'+
+  '<tr><td><b>Guest / group</b></td><td>'+esc(b.client)+'</td><td><b>Guests</b></td><td>'+n2(b.adults)+' adults'+(n2(b.children)?' + '+n2(b.children)+' children':'')+'</td></tr>'+
+  '<tr><td><b>Destinations</b></td><td>'+esc(b.dest||"")+'</td><td><b>Travel dates</b></td><td>'+fdate(b.start)+' – '+fdate(b.end)+'</td></tr></table>';
+  h+='<h3 style="margin:14px 0 6px;color:#0E2A33">Confirmed services</h3><table><tr><th>Date</th><th>Service</th><th>Supplier</th><th>Confirmation</th><th>Status</th></tr>';
+  (b.services||[]).forEach(function(s){ var sup=byId(db.suppliers,s.supplierId); h+='<tr><td>'+(s.date?fdate(s.date):'—')+'</td><td><b>'+esc(s.desc)+'</b><div style="color:#777;font-size:11px">'+esc(s.cat||"")+'</div></td><td>'+(sup?esc(sup.name):'—')+'</td><td>'+esc(s.conf||"—")+'</td><td>'+esc(s.status||"Pending")+'</td></tr>'; });
+  h+='</table><div style="margin-top:14px;background:#0E2A33;color:#fff;border-radius:10px;padding:10px 12px"><b>24/7 emergency assistance:</b> '+esc(db.settings.whatsapp)+' (WhatsApp) · '+esc(db.settings.phone)+'</div>';
+  return h;
+}
+function invoiceHTML(b){
+  var recvd=bkReceived(b);
+  var h=docHead("INVOICE");
+  h+='<table><tr><td><b>Invoice for</b></td><td>'+esc(b.client)+(byId(db.agents,b.agentId)?' — '+esc(byId(db.agents,b.agentId).name):'')+'</td><td><b>Booking ID</b></td><td>'+esc(b.ref)+'</td></tr>'+
+  '<tr><td><b>Travel dates</b></td><td>'+fdate(b.start)+' – '+fdate(b.end)+'</td><td><b>Invoice date</b></td><td>'+fdate(todayISO())+'</td></tr></table>';
+  h+='<table style="margin-top:12px"><tr><th>Description</th><th class="num">Amount</th></tr>'+
+  '<tr><td>Tour package — '+esc(b.dest||"Thailand")+' · '+(n2(b.adults)+n2(b.children))+' guests</td><td class="num">'+money(b.sell)+'</td></tr>'+
+  '<tr><td><b>Received to date</b></td><td class="num">'+money(recvd)+'</td></tr>'+
+  '<tr><td><b>Balance due</b></td><td class="num"><b>'+money(n2(b.sell)-recvd)+'</b></td></tr></table>';
+  var dl=b.deadlines||{};
+  if(dl.final)h+='<div style="margin-top:10px;font-size:12.5px">Final payment due: <b>'+fdate(dl.final)+'</b></div>';
+  return h;
+}
+
+/* ============================================================ ACTIONS ============================================================ */
+var A={
+  closeModal:function(){ document.getElementById("mwrap").classList.remove("open"); },
+  login:function(){
+    var role=gv("li_role"), pw=gv("li_pw"), name=gv("li_name")||ROLES[role];
+    if(pw!==db.settings.pwd[role]){ alert("Wrong password for "+ROLES[role]+"."); return; }
+    session={role:role,name:name}; sessionStorage.setItem(SESKEY,JSON.stringify(session));
+    pushAudit("Signed in"); save(); location.hash="#/dash"; render();
+  },
+  logout:function(){ pushAudit("Signed out"); save(); session=null; sessionStorage.removeItem(SESKEY); render(); },
+  crmFilter:function(f){ crmF=f; render(); },
+  bkFilter:function(f){ bkF=f; render(); },
+  opsRange:function(r){ opsRange=r; render(); },
+
+  /* ---- inquiries ---- */
+  editInq:function(id){
+    var i=byId(db.inquiries,id)||{};
+    openModal(id?"Edit inquiry":"New inquiry",inqForm(i),
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveInq(\''+id+'\')">Save inquiry</button>');
+  },
+  saveInq:function(id){
+    if(!gv("f_client")){ alert("Client / group name is required."); return; }
+    var i=byId(db.inquiries,id);
+    if(!i){ i={id:uid(),created:new Date().toISOString(),notesLog:[]}; db.inquiries.unshift(i); }
+    i.client=gv("f_client"); i.agentId=gv("f_agent"); i.market=gv("f_market"); i.source=gv("f_source");
+    i.dest=gv("f_dest"); i.owner=gv("f_owner"); i.start=gv("f_start"); i.end=gv("f_end");
+    i.adults=gn("f_ad"); i.children=gn("f_ch"); i.budget=gv("f_budget"); i.hcat=gv("f_hcat");
+    i.status=gv("f_status"); i.follow=gv("f_follow"); i.req=gv("f_req"); i.lost=gv("f_lost");
+    pushAudit((id?"Updated":"Created")+" inquiry",i.client); save(); A.closeModal(); render();
+  },
+  inqNote:function(id){
+    var note=prompt("Add a note to the communication history:"); if(!note)return;
+    var i=byId(db.inquiries,id); if(!i)return;
+    i.notesLog=i.notesLog||[]; i.notesLog.unshift(fdate(todayISO())+" ("+session.name+"): "+note);
+    pushAudit("Added CRM note",i.client); save(); render();
+  },
+  quoteFromInq:function(id){
+    var i=byId(db.inquiries,id); if(!i)return;
+    var q=A._newQ(); q.client=i.client; q.agentId=i.agentId; q.market=i.market; q.dest=i.dest;
+    q.start=i.start; q.end=i.end; q.adults=n2(i.adults)||2; q.children=n2(i.children); q.inquiryId=i.id;
+    db.quotes.unshift(q);
+    if(i.status==="New Inquiry")i.status="Working";
+    pushAudit("Created quotation from inquiry",q.ref); save(); location.hash="#/quote/"+q.id;
+  },
+
+  /* ---- agents ---- */
+  editAgent:function(id){
+    var a=byId(db.agents,id)||{};
+    openModal(id?"Edit agent / client":"Add agent / client",
+      '<div class="grid2">'+inp("f_name","Company / client name",a.name)+sel("f_type","Type",a.type||"B2B Agent",["B2B Agent","Corporate Client","Direct Customer"])+
+      inp("f_country","Country / market",a.country)+inp("f_person","Contact person",a.person)+
+      inp("f_phone","Phone / WhatsApp",a.phone)+inp("f_email","Email",a.email)+
+      inp("f_terms","Commercial terms",a.terms,"text","e.g. Net rates, 50% deposit")+'</div>'+ta("f_notes","Notes",a.notes),
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveAgent(\''+id+'\')">Save</button>');
+  },
+  saveAgent:function(id){
+    if(!gv("f_name")){ alert("Name is required."); return; }
+    var a=byId(db.agents,id); if(!a){ a={id:uid()}; db.agents.unshift(a); }
+    a.name=gv("f_name"); a.type=gv("f_type"); a.country=gv("f_country"); a.person=gv("f_person");
+    a.phone=gv("f_phone"); a.email=gv("f_email"); a.terms=gv("f_terms"); a.notes=gv("f_notes");
+    pushAudit((id?"Updated":"Added")+" agent/client",a.name); save(); A.closeModal(); render();
+  },
+
+  /* ---- suppliers ---- */
+  editSup:function(id){
+    var s=byId(db.suppliers,id)||{};
+    openModal(id?"Edit supplier":"Add supplier",
+      '<div class="grid2">'+inp("f_name","Supplier name",s.name)+sel("f_cat","Category",s.cat||"Hotel",SUPCATS)+
+      inp("f_dest","Destination",s.dest)+inp("f_person","Contact person",s.person)+
+      inp("f_phone","Phone / WhatsApp",s.phone)+inp("f_email","Email",s.email)+
+      sel("f_terms","Payment terms",s.terms||"Pay before arrival",["Prepayment","Pay before arrival","7 days before service","Pay on arrival","Credit 7 days","Credit 15 days","Credit 30 days"])+
+      sel("f_rating","Quality rating",s.rating||3,[[1,"★"],[2,"★★"],[3,"★★★"],[4,"★★★★"],[5,"★★★★★"]])+
+      sel("f_pref","Preferred supplier",s.pref?"1":"0",[["0","No"],["1","Yes — preferred"]])+
+      sel("f_status","Status",s.status||"Active",["Active","Inactive"])+'</div>'+ta("f_notes","Bank details / operational notes",s.notes),
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveSup(\''+id+'\')">Save</button>');
+  },
+  saveSup:function(id){
+    if(!gv("f_name")){ alert("Supplier name is required."); return; }
+    var s=byId(db.suppliers,id); if(!s){ s={id:uid()}; db.suppliers.unshift(s); }
+    s.name=gv("f_name"); s.cat=gv("f_cat"); s.dest=gv("f_dest"); s.person=gv("f_person");
+    s.phone=gv("f_phone"); s.email=gv("f_email"); s.terms=gv("f_terms"); s.rating=gn("f_rating");
+    s.pref=gv("f_pref")==="1"; s.status=gv("f_status"); s.notes=gv("f_notes");
+    pushAudit((id?"Updated":"Added")+" supplier",s.name); save(); A.closeModal(); render();
+  },
+
+  /* ---- contracts ---- */
+  editCon:function(id){
+    var c=byId(db.contracts,id)||{};
+    openModal(id?"Edit hotel contract rate":"Add hotel contract rate",
+      '<div class="grid2">'+inp("f_hotel","Hotel name",c.hotel)+inp("f_dest","Destination",c.dest)+
+      sel("f_star","Star rating",c.star||"4-star",["3-star","4-star","5-star","Luxury"])+
+      inp("f_room","Room category",c.roomCat,"text","e.g. Deluxe")+
+      sel("f_meal","Meal basis",c.meal||"ABF (breakfast)",["Room only","ABF (breakfast)","Half board","Full board"])+
+      sel("f_rtype","Rate type",c.rtype||"FIT",["FIT","Group","MICE"])+
+      inp("f_from","Valid from",c.from,"date")+inp("f_to","Valid to",c.to,"date")+
+      inp("f_dbl","DBL / TWN rate (per room / night)",c.dbl,"number")+inp("f_sgl","SGL rate",c.sgl,"number")+
+      inp("f_trp","TRP rate",c.trp,"number")+inp("f_exb","Extra bed",c.exb,"number")+'</div>'+
+      ta("f_policy","Child policy · surcharges · cancellation · deposit terms",c.policy),
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveCon(\''+id+'\')">Save</button>');
+  },
+  saveCon:function(id){
+    if(!gv("f_hotel")){ alert("Hotel name is required."); return; }
+    var c=byId(db.contracts,id); if(!c){ c={id:uid()}; db.contracts.unshift(c); }
+    c.hotel=gv("f_hotel"); c.dest=gv("f_dest"); c.star=gv("f_star"); c.roomCat=gv("f_room");
+    c.meal=gv("f_meal"); c.rtype=gv("f_rtype"); c.from=gv("f_from"); c.to=gv("f_to");
+    c.dbl=gn("f_dbl"); c.sgl=gn("f_sgl"); c.trp=gn("f_trp"); c.exb=gn("f_exb"); c.policy=gv("f_policy");
+    pushAudit((id?"Updated":"Added")+" hotel contract",c.hotel); save(); A.closeModal(); render();
+  },
+
+  /* ---- quotations ---- */
+  _newQ:function(){
+    var n=db.quotes.length+1, yr=new Date().getFullYear();
+    var ref="QT-"+yr+"-"+String(n).padStart(4,"0");
+    while(db.quotes.some(function(q){return q.ref===ref;})){ n++; ref="QT-"+yr+"-"+String(n).padStart(4,"0"); }
+    return {id:uid(),ref:ref,created:new Date().toISOString(),client:"New client",status:"Draft",version:1,
+      adults:2,children:0,muMode:"pct",muVal:18,tax:n2(db.settings.tax),fee:n2(db.settings.payFee),lines:[],days:[],versions:[]};
+  },
+  newQuote:function(){
+    var q=A._newQ(); db.quotes.unshift(q); pushAudit("Created quotation",q.ref); save(); location.hash="#/quote/"+q.id;
+  },
+  editQHead:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    openModal("Trip header — "+q.ref,
+      '<div class="grid2">'+inp("f_client","Client / group name",q.client)+
+      sel("f_agent","Agent / company",q.agentId||"",[["","— Direct client —"]].concat(db.agents.map(function(a){return[a.id,a.name];})))+
+      inp("f_market","Market / nationality",q.market)+inp("f_dest","Destinations",q.dest)+
+      inp("f_start","Travel start",q.start,"date")+inp("f_end","Travel end",q.end,"date")+
+      inp("f_ad","Adults",q.adults,"number")+inp("f_ch","Children",q.children,"number")+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveQHead(\''+id+'\')">Save</button>');
+  },
+  saveQHead:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    q.client=gv("f_client")||q.client; q.agentId=gv("f_agent"); q.market=gv("f_market"); q.dest=gv("f_dest");
+    q.start=gv("f_start"); q.end=gv("f_end"); q.adults=Math.max(1,gn("f_ad")); q.children=gn("f_ch");
+    pushAudit("Updated quotation header",q.ref); save(); A.closeModal(); render();
+  },
+  editLine:function(qid,lid){
+    var q=byId(db.quotes,qid); if(!q)return;
+    var l=byId(q.lines||[],lid)||{};
+    var supOpts=[["","— No supplier —"]].concat(db.suppliers.filter(function(s){return s.status!=="Inactive";}).map(function(s){return[s.id,s.name+" ("+s.cat+")"];}));
+    var conOpts=[["","— No contract rate —"]].concat(db.contracts.map(function(c){return[c.id,c.hotel+" · "+c.roomCat+" · "+fdate(c.from)+"–"+fdate(c.to)];}));
+    openModal(lid?"Edit cost line":"Add cost line",
+      '<div class="grid2">'+sel("f_cat","Category",l.cat||"Hotel",COSTCATS)+inp("f_desc","Description",l.desc,"text","e.g. Deluxe room × 3 nights")+
+      inp("f_date","Service date",l.date,"date")+
+      sel("f_sup","Supplier",l.supplierId||"",supOpts)+
+      sel("f_con","Hotel contract rate (validated by date)",l.contractId||"",conOpts)+
+      inp("f_qty","Quantity",l.qty==null?1:l.qty,"number")+
+      inp("f_unit","Unit cost ("+db.settings.cur+")",l.unit,"number")+
+      sel("f_basis","Basis",l.basis||"total",[["total","Qty × unit = total for the group"],["pp","Qty × unit = per person (× pax)"]])+'</div>'+
+      '<div class="mini" style="margin-top:8px">Tip: for hotels use total basis — e.g. 10 rooms × 3 nights = Qty 30 × room rate.</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveLine(\''+qid+'\',\''+lid+'\')">Save line</button>');
+  },
+  saveLine:function(qid,lid){
+    var q=byId(db.quotes,qid); if(!q)return;
+    var t=todayISO();
+    var conId=gv("f_con"), con=byId(db.contracts,conId), sd=gv("f_date");
+    if(con){
+      if(con.to&&con.to<t&&!confirm("This hotel contract EXPIRED on "+fdate(con.to)+". Use it anyway?"))return;
+      if(sd&&con.from&&con.to&&(sd<con.from||sd>con.to)&&!confirm("Service date "+fdate(sd)+" is OUTSIDE the contract validity ("+fdate(con.from)+" – "+fdate(con.to)+"). Use anyway?"))return;
+    }
+    var l=byId(q.lines||[],lid);
+    if(!l){ l={id:uid()}; q.lines=q.lines||[]; q.lines.push(l); }
+    l.cat=gv("f_cat"); l.desc=gv("f_desc")||l.cat; l.date=sd; l.supplierId=gv("f_sup"); l.contractId=conId;
+    l.qty=gn("f_qty"); l.unit=gn("f_unit"); l.basis=gv("f_basis");
+    pushAudit("Saved cost line on "+q.ref,l.desc); save(); A.closeModal(); render();
+  },
+  delLine:function(qid,lid){
+    var q=byId(db.quotes,qid); if(!q)return;
+    if(!confirm("Remove this cost line?"))return;
+    q.lines=(q.lines||[]).filter(function(l){return l.id!==lid;});
+    pushAudit("Removed cost line on "+q.ref); save(); render();
+  },
+  editPricing:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    openModal("Markup, taxes & charges — "+q.ref,
+      '<div class="grid2">'+sel("f_mum","Markup mode",q.muMode,[["pct","Percentage of net cost"],["fixed","Fixed amount (total)"],["pp","Fixed amount per person"]])+
+      inp("f_muv","Markup value",q.muVal,"number")+
+      inp("f_tax","Taxes %",q.tax,"number")+inp("f_fee","Payment charges %",q.fee,"number")+'</div>'+
+      '<div class="mini" style="margin-top:8px">Guardrail: the system warns whenever the gross margin falls below '+db.settings.minMargin+'%.</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.savePricing(\''+id+'\')">Save pricing</button>');
+  },
+  savePricing:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    q.muMode=gv("f_mum"); q.muVal=gn("f_muv"); q.tax=gn("f_tax"); q.fee=gn("f_fee");
+    pushAudit("Updated pricing on "+q.ref); save(); A.closeModal(); render();
+  },
+  editDay:function(qid,ix){
+    var q=byId(db.quotes,qid); if(!q)return;
+    var d=ix>=0?(q.days||[])[ix]:{};
+    d=d||{};
+    openModal(ix>=0?"Edit day "+(ix+1):"Add itinerary day",
+      inp("f_title","Day title",d.title,"text","e.g. Arrival Bangkok — city temples")+
+      ta("f_desc","Program description (client-facing)",d.desc)+
+      '<div class="grid2">'+inp("f_meals","Meals",d.meals,"text","Breakfast, Lunch")+inp("f_city","Overnight city",d.city)+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveDay(\''+qid+'\','+ix+')">Save day</button>');
+  },
+  saveDay:function(qid,ix){
+    var q=byId(db.quotes,qid); if(!q)return;
+    q.days=q.days||[];
+    var d= ix>=0?q.days[ix]:{};
+    d.title=gv("f_title")||"Day program"; d.desc=gv("f_desc"); d.meals=gv("f_meals"); d.city=gv("f_city");
+    if(ix<0)q.days.push(d);
+    pushAudit("Saved itinerary day on "+q.ref); save(); A.closeModal(); render();
+  },
+  delDay:function(qid,ix){
+    var q=byId(db.quotes,qid); if(!q)return;
+    if(!confirm("Remove day "+(ix+1)+"?"))return;
+    q.days.splice(ix,1); pushAudit("Removed itinerary day on "+q.ref); save(); render();
+  },
+  setQStatus:function(id,st){
+    var q=byId(db.quotes,id); if(!q)return;
+    var c=qCalc(q);
+    if((st==="Sent"||st==="Approved")&&c.sell>0&&c.margin<n2(db.settings.minMargin)&&!confirm("Margin "+c.margin.toFixed(1)+"% is BELOW the "+db.settings.minMargin+"% minimum. Release anyway? This will be logged."))return;
+    q.status=st; pushAudit("Quotation "+q.ref+" → "+st+(c.margin<n2(db.settings.minMargin)?" (below-minimum margin override)":"")); save(); render();
+  },
+  saveVersion:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    var c=qCalc(q);
+    q.versions=q.versions||[];
+    q.versions.unshift({n:q.version||1,at:new Date().toISOString(),sell:c.sell,lines:JSON.parse(JSON.stringify(q.lines||[])),muMode:q.muMode,muVal:q.muVal});
+    q.version=(q.version||1)+1;
+    pushAudit("Saved version snapshot of "+q.ref,"now v"+q.version); save(); render();
+  },
+  toBooking:function(id){
+    var q=byId(db.quotes,id); if(!q)return;
+    var c=qCalc(q);
+    if(!(q.lines||[]).length){ alert("Add cost lines before converting to a booking."); return; }
+    if(!confirm("Convert "+q.ref+" to a booking at "+money(c.sell)+" total?"))return;
+    var city=(q.dest||"").split(/[+,]/)[0].trim().slice(0,3)||db.settings.defCity;
+    var b={id:uid(),ref:genBookingId(city),created:new Date().toISOString(),quoteId:q.id,
+      client:q.client,agentId:q.agentId,dest:q.dest,start:q.start,end:q.end,adults:q.adults,children:q.children,
+      status:"Tentative",sell:c.sell,deadlines:{},audit:[],
+      services:(q.lines||[]).map(function(l){ return {id:uid(),cat:l.cat,desc:l.desc,date:l.date,supplierId:l.supplierId,contractId:l.contractId,cost:n2(l.qty)*n2(l.unit)*(l.basis==="pp"?c.pax:1),status:"Pending",conf:"",due:""}; })};
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Booking created from "+q.ref+" at "+money(c.sell)});
+    db.bookings.unshift(b);
+    q.status="Booked"; q.bookingId=b.id;
+    var i=byId(db.inquiries,q.inquiryId); if(i)i.status="Confirmed";
+    pushAudit("Converted "+q.ref+" to booking",b.ref); save(); location.hash="#/booking/"+b.id;
+  },
+  printProposal:function(id){ var q=byId(db.quotes,id); if(q)openDoc(proposalHTML(q),q.ref+" proposal"); },
+
+  /* ---- bookings ---- */
+  editBk:function(id){
+    var b=byId(db.bookings,id); if(!b)return;
+    openModal("Edit booking — "+b.ref,
+      '<div class="grid2">'+inp("f_client","Client / group name",b.client)+inp("f_dest","Destinations",b.dest)+
+      inp("f_start","Travel start",b.start,"date")+inp("f_end","Travel end",b.end,"date")+
+      inp("f_ad","Adults",b.adults,"number")+inp("f_ch","Children",b.children,"number")+
+      (canFinance()?inp("f_sell","Selling price total ("+db.settings.cur+")",b.sell,"number"):"")+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveBk(\''+id+'\')">Save</button>');
+  },
+  saveBk:function(id){
+    var b=byId(db.bookings,id); if(!b)return;
+    var old=n2(b.sell);
+    b.client=gv("f_client")||b.client; b.dest=gv("f_dest"); b.start=gv("f_start"); b.end=gv("f_end");
+    b.adults=gn("f_ad"); b.children=gn("f_ch");
+    if(canFinance()&&gv("f_sell")!==""){ b.sell=gn("f_sell"); if(b.sell!==old)b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Selling price changed "+money(old)+" → "+money(b.sell)}); }
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Booking details edited"});
+    pushAudit("Edited booking",b.ref); save(); A.closeModal(); render();
+  },
+  setBStatus:function(id,st){
+    var b=byId(db.bookings,id); if(!b)return;
+    if(st==="Cancelled"&&!confirm("Cancel booking "+b.ref+"? This is logged and reversible only by setting a new status."))return;
+    b.status=st; b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Status → "+st});
+    pushAudit("Booking "+b.ref+" → "+st); save(); render();
+  },
+  editDeadlines:function(id){
+    var b=byId(db.bookings,id); if(!b)return; var d=b.deadlines||{};
+    openModal("Deadlines — "+b.ref,
+      '<div class="grid2">'+inp("f_dep","Deposit due",d.deposit,"date")+inp("f_fin","Final payment due",d.final,"date")+
+      inp("f_room","Rooming list due",d.rooming,"date")+inp("f_rel","Release / cancellation date",d.release,"date")+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveDeadlines(\''+id+'\')">Save</button>');
+  },
+  saveDeadlines:function(id){
+    var b=byId(db.bookings,id); if(!b)return;
+    b.deadlines={deposit:gv("f_dep"),final:gv("f_fin"),rooming:gv("f_room"),release:gv("f_rel")};
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Deadlines updated"});
+    pushAudit("Updated deadlines",b.ref); save(); A.closeModal(); render();
+  },
+  editSvc:function(bid,sid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    var s=byId(b.services||[],sid)||{};
+    var supOpts=[["","— Not assigned —"]].concat(db.suppliers.filter(function(x){return x.status!=="Inactive";}).map(function(x){return[x.id,x.name+" ("+x.cat+")"];}));
+    openModal(sid?"Update service":"Add service — "+b.ref,
+      '<div class="grid2">'+sel("f_cat","Category",s.cat||"Tour",COSTCATS)+inp("f_desc","Service description",s.desc)+
+      inp("f_date","Service date",s.date,"date")+sel("f_sup","Supplier",s.supplierId||"",supOpts)+
+      inp("f_conf","Supplier confirmation number",s.conf)+
+      sel("f_status","Service status",s.status||"Pending",Object.keys(SSTAT))+
+      (canFinance()?inp("f_cost","Supplier cost ("+db.settings.cur+")",s.cost,"number"):"")+
+      (canFinance()?inp("f_due","Supplier payment due",s.due,"date"):"")+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button>'+(sid?'<button class="btn red" onclick="A.delSvc(\''+bid+'\',\''+sid+'\')">Remove</button>':'')+'<button class="btn" onclick="A.saveSvc(\''+bid+'\',\''+sid+'\')">Save</button>');
+  },
+  saveSvc:function(bid,sid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    var s=byId(b.services||[],sid);
+    if(!s){ s={id:uid()}; b.services=b.services||[]; b.services.push(s); }
+    s.cat=gv("f_cat"); s.desc=gv("f_desc")||s.cat; s.date=gv("f_date"); s.supplierId=gv("f_sup");
+    s.conf=gv("f_conf"); s.status=gv("f_status");
+    if(canFinance()){ s.cost=gn("f_cost"); s.due=gv("f_due"); }
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Service saved: "+s.desc+" ("+s.status+")"});
+    pushAudit("Saved service on "+b.ref,s.desc); save(); A.closeModal(); render();
+  },
+  delSvc:function(bid,sid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    if(!confirm("Remove this service from the booking?"))return;
+    b.services=(b.services||[]).filter(function(s){return s.id!==sid;});
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Service removed"});
+    pushAudit("Removed service on "+b.ref); save(); A.closeModal(); render();
+  },
+  printVoucher:function(id){ var b=byId(db.bookings,id); if(b)openDoc(voucherHTML(b),b.ref+" voucher"); },
+  printInvoice:function(id){ var b=byId(db.bookings,id); if(b)openDoc(invoiceHTML(b),b.ref+" invoice"); },
+
+  /* ---- finance ---- */
+  addReceipt:function(bid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    var bal=n2(b.sell)-bkReceived(b);
+    openModal("Record client receipt — "+b.ref,
+      '<div class="grid2">'+inp("f_amt","Amount received ("+db.settings.cur+")",bal>0?bal.toFixed(2):"","number")+
+      inp("f_date","Date",todayISO(),"date")+
+      sel("f_method","Method",'Bank transfer',["Bank transfer","Cash","Card","Wallet / other"])+
+      inp("f_note","Reference / note","")+'</div><div class="mini">Balance before this receipt: '+money(bal)+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.saveReceipt(\''+bid+'\')">Save receipt</button>');
+  },
+  saveReceipt:function(bid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    var amt=gn("f_amt"); if(amt<=0){ alert("Enter an amount."); return; }
+    db.receipts.unshift({id:uid(),bookingId:bid,amount:amt,date:gv("f_date")||todayISO(),method:gv("f_method"),note:gv("f_note")});
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Client receipt "+money(amt)});
+    pushAudit("Client receipt "+money(amt),b.ref); save(); A.closeModal(); render();
+  },
+  addPayment:function(bid,sid){
+    var b=byId(db.bookings,bid); if(!b)return; var s=byId(b.services||[],sid); if(!s)return;
+    var bal=n2(s.cost)-svcPaid(b,sid);
+    openModal("Pay supplier — "+esc(s.desc),
+      '<div class="grid2">'+inp("f_amt","Amount paid ("+db.settings.cur+")",bal>0?bal.toFixed(2):"","number")+
+      inp("f_date","Date",todayISO(),"date")+inp("f_note","Reference / slip number","")+'</div>'+
+      '<div class="mini">Booking '+esc(b.ref)+' · Balance before: '+money(bal)+'</div>',
+      '<button class="btn grey" onclick="A.closeModal()">Cancel</button><button class="btn" onclick="A.savePayment(\''+bid+'\',\''+sid+'\')">Save payment</button>');
+  },
+  savePayment:function(bid,sid){
+    var b=byId(db.bookings,bid); if(!b)return;
+    var amt=gn("f_amt"); if(amt<=0){ alert("Enter an amount."); return; }
+    db.payments.unshift({id:uid(),bookingId:bid,serviceId:sid,amount:amt,date:gv("f_date")||todayISO(),note:gv("f_note")});
+    b.audit.unshift({at:new Date().toISOString(),by:session.name,action:"Supplier payment "+money(amt)});
+    pushAudit("Supplier payment "+money(amt),b.ref); save(); A.closeModal(); render();
+  },
+
+  /* ---- settings / data ---- */
+  saveSettings:function(){
+    var s=db.settings;
+    s.company=gv("s_company")||s.company; s.addr=gv("s_addr"); s.phone=gv("s_phone"); s.whatsapp=gv("s_wa");
+    s.email=gv("s_email"); s.web=gv("s_web"); s.cur=gv("s_cur")||"USD"; s.minMargin=gn("s_min");
+    s.tax=gn("s_tax"); s.payFee=gn("s_fee"); s.prefix=gv("s_prefix")||"DA"; s.defCity=gv("s_city")||"BKK";
+    pushAudit("Settings updated"); save(); render(); alert("Settings saved.");
+  },
+  exportBackup:function(){
+    var blob=new Blob([JSON.stringify({app:"discovery-asia-os",format:1,exportedAt:new Date().toISOString(),by:session?session.name:"",data:db},null,1)],{type:"application/json"});
+    var a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="DISCOVERY-ASIA-OS-BACKUP-"+todayISO()+".json"; a.click();
+    pushAudit("Exported backup"); save();
+  },
+  importBackup:function(ev){
+    var f=ev.target.files[0]; if(!f)return;
+    var rd=new FileReader();
+    rd.onload=function(){
+      try{
+        var j=JSON.parse(rd.result);
+        var d=j&&j.app==="discovery-asia-os"?j.data:j;
+        if(!d||!d.settings)throw new Error("bad");
+        if(!confirm("Replace ALL data on this device with the backup file? Export a backup of the current data first if unsure."))return;
+        db=d; if(!db.counters)db.counters={}; if(!db.seq)db.seq=0;
+        pushAudit("Imported backup file"); save(); render(); alert("Backup imported.");
+      }catch(e){ alert("This file is not a valid Discovery Asia OS backup."); }
+    };
+    rd.readAsText(f);
+  },
+  wipe:function(){
+    if(!confirm("Erase ALL Discovery Asia OS data on this device? This cannot be undone."))return;
+    if(!confirm("Final confirmation — erase everything?"))return;
+    db=blankDB(); save(); render();
+  },
+  seedDemo:function(fromLogin){
+    if(db.bookings.length&&!confirm("Demo data will be ADDED alongside existing records. Continue?"))return;
+    var agA={id:uid(),name:"Skyway Holidays (Dhaka)",type:"B2B Agent",country:"Bangladesh",person:"Mr. Rahman",phone:"+880 17 0000 0000",email:"ops@skyway.example",terms:"Net rates · 50% deposit"};
+    db.agents.unshift(agA);
+    var supH={id:uid(),name:"Grand Riverside Hotel Bangkok",cat:"Hotel",dest:"Bangkok",phone:"+66 2 000 0000",terms:"7 days before service",rating:4,pref:true,status:"Active"};
+    var supT={id:uid(),name:"Siam Fleet Transport",cat:"Transport",dest:"Bangkok / Pattaya",phone:"+66 8 000 0000",terms:"Pay on arrival",rating:4,status:"Active"};
+    var supX={id:uid(),name:"Coral Island Marine Tours",cat:"Tour / Attraction",dest:"Pattaya",phone:"+66 8 111 1111",terms:"Prepayment",rating:5,pref:true,status:"Active"};
+    db.suppliers.unshift(supH,supT,supX);
+    var yr=new Date().getFullYear();
+    var con={id:uid(),hotel:"Grand Riverside Hotel Bangkok",dest:"Bangkok",star:"4-star",roomCat:"Deluxe",meal:"ABF (breakfast)",rtype:"Group",from:yr+"-01-01",to:yr+"-10-31",dbl:62,sgl:55,trp:80,exb:22,policy:"Child under 12 with parents FOC without bed. 1 FOC per 20 paying pax. Cancellation 14 days."};
+    db.contracts.unshift(con);
+    var d1=new Date(); d1.setDate(d1.getDate()+21);
+    var s1=d1.toISOString().slice(0,10);
+    var d2=new Date(); d2.setDate(d2.getDate()+25);
+    var e1=d2.toISOString().slice(0,10);
+    var inq={id:uid(),created:new Date().toISOString(),client:"Meridian Pharma incentive group",agentId:agA.id,market:"Bangladesh",source:"B2B agent",dest:"Bangkok + Pattaya",owner:"Sales team",start:s1,end:e1,adults:24,children:0,hcat:"4-star",status:"Working",follow:todayISO(),req:"4N/5D incentive. Gala dinner on last night. Halal meals.",notesLog:[fdate(todayISO())+" (System): Demo inquiry created."]};
+    db.inquiries.unshift(inq);
+    var q=A._newQ();
+    q.client=inq.client; q.agentId=agA.id; q.market="Bangladesh"; q.dest="Bangkok + Pattaya"; q.start=s1; q.end=e1; q.adults=24; q.children=0; q.inquiryId=inq.id; q.status="Sent"; q.muMode="pct"; q.muVal=18;
+    q.lines=[
+      {id:uid(),cat:"Hotel",desc:"Grand Riverside Deluxe — 12 TWN × 4 nights",date:s1,supplierId:supH.id,contractId:con.id,qty:48,unit:62,basis:"total"},
+      {id:uid(),cat:"Transport",desc:"45-seat coach — airport transfers + Pattaya day trips",date:s1,supplierId:supT.id,qty:5,unit:180,basis:"total"},
+      {id:uid(),cat:"Tour",desc:"Coral Island speedboat with lunch",date:s1,supplierId:supX.id,qty:1,unit:28,basis:"pp"},
+      {id:uid(),cat:"Meal",desc:"Gala dinner with hall & sound",qty:1,unit:22,basis:"pp"},
+      {id:uid(),cat:"Guide",desc:"Bengali-speaking guide × 5 days",qty:5,unit:60,basis:"total"}
+    ];
+    q.days=[
+      {title:"Arrival Bangkok",desc:"Meet & greet at Suvarnabhumi, transfer to hotel, evening free at Asiatique riverfront.",meals:"—",city:"Bangkok"},
+      {title:"Bangkok city & temples",desc:"Grand Palace area, Wat Arun photo stop, Chao Phraya boat ride.",meals:"Breakfast, Lunch",city:"Bangkok"},
+      {title:"Pattaya — Coral Island",desc:"Speedboat to Koh Larn, beach time and water sports (optional), seafood lunch.",meals:"Breakfast, Lunch",city:"Bangkok"},
+      {title:"Free day + gala dinner",desc:"Shopping at ICONSIAM, evening gala dinner with awards ceremony.",meals:"Breakfast, Gala dinner",city:"Bangkok"},
+      {title:"Departure",desc:"Check-out and transfer to airport.",meals:"Breakfast",city:"—"}
+    ];
+    db.quotes.unshift(q);
+    pushAudit("Demo data loaded");
+    save();
+    if(fromLogin)alert("Demo data loaded. Sign in with a role password to explore — e.g. Managing Director / DA-MD-2026.");
+    render();
+  }
+};
+window.A=A;
+
+/* ---------- boot ---------- */
+(function boot(){
+  db=load();
+  try{ var s=JSON.parse(sessionStorage.getItem(SESKEY)); if(s&&s.role&&ROLES[s.role])session=s; }catch(e){}
+  render();
+})();
+</script>
+</body>
+</html>
